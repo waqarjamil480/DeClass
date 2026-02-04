@@ -52,4 +52,13 @@
 # 		break
 # 	else:
 # 		print("finding...")
-# 	counter +=1
+# 	counter +=1 
+
+
+# counter = 0
+# while counter<= 10:
+# 	if(counter == 3):
+# 		counter +=1
+# 		continue
+# 	print(counter)
+# 	counter += 1
