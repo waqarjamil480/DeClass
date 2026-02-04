@@ -1,4 +1,4 @@
-var_list = []
+var_list = []   #same like array but in list we can store different data types
 print(var_list)
 var_list = [1, 2, 3]
 print(var_list)
@@ -25,6 +25,11 @@ var_list_main = [2, 4,4, 6, 8, 10]
 var_list_copy = var_list_main.copy()
 
 # to append some value
+
+
+names = ['waqat', 'jamil', 'wahab']
+names[1]= 'waqar'
+
 var_list_main.append(123)
 print(var_list_main)
 print(var_list_copy)
