@@ -62,3 +62,78 @@
 # 		continue
 # 	print(counter)
 # 	counter += 1
+
+
+# while True:
+#     choice = input("Type Y to print the line again (any other key to stop): ")
+
+#     if choice.upper() == 'Y':
+#         print("This line is printed again!")
+#     else:
+#         print("Program stopped.")
+#         break
+
+# list= [10, 13, 14, 15, 16, 7, 18, 19, 25]
+# for i in list:
+#     if i == 15:
+#         print("found 15")
+#         break
+#     print(i)
+# else:
+#     print("end")
+
+# for i in range(5):
+# 	print(i)
+
+
+# dollar=int(input("Enter Amount in US Dollar : "))
+# def usd(a):
+#     s=int(280)
+#     d=a*s
+#     print (f"{a} USD CONVERT IN PKR IS {d}")
+
+# usd(dollar)
+
+
+
+# num = int(input("Enter a number : "))
+
+# def check(num):
+#     if(num%2==1):
+#         print(f"{num} is ODD")
+#     else:
+#         print(f"{num} is Even")
+#     return
+
+# check(num)
+
+
+
+
+
+# n = int(input("Enter Number : "))
+# def waqar(n):
+#     if(n==0):
+#         return
+
+#     print(n)
+#     waqar(n-2)
+# waqar(n)
+
+
+# def sum_natural(n):
+#     if n == 1:          # base case
+#         return 1
+#     else:
+#         return n + sum_natural(n - 1)
+
+# n = int(input("Enter a number: "))
+# print("Sum of first", n, "natural numbers is:", sum_natural(n))
+
+
+# def question1():
+#     customer_ids = ["c101", "c102", "c103", "c104"]
+#     for customer_id in customer_ids:
+#         print(f"Processing customer ID: {customer_id}")
+# question1()
+
