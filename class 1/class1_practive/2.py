@@ -137,3 +137,44 @@
 #         print(f"Processing customer ID: {customer_id}")
 # question1()
 
+# def question2():
+#     customer_ids = ["c101", "c102", "c103", "c104"]
+#     for i in customer_ids:
+#         print(f"Dear {i}, your data has been processed successfully.")
+# question2()
+
+# def question3():
+#     servers = [
+#         {"name": "Server1", "location": "US-East", "status": "active"},
+#         {"name": "Server2", "location": "US-West", "status": "inactive"},
+#     ]
+
+#     for server in servers:
+#         print(f"{server['name']} is located in {server['location']} and is currently {server['status']}.")
+# question3()
+
+# def question4():
+#     config1 = {"batch_size": 100}
+#     config2 = {"timeout": 300}
+#     config3 = {"retries": 5}
+#     final_config = {}
+#     final_config = {**config1, **config2, **config3}
+#     # for config in [config1, config2, config3]:
+#     #     final_config.update(config)
+#     print(final_config)
+# question4()
+
+
+
+
+
+def question5():
+    source1 = {'CPU': 30, 'Memory': 70}
+    source2 = {'CPU': 40, 'Disk': 90}
+    source = dict()
+    distinct_keys = set(source1.keys()).union(set(source2.keys()))
+    for key in distinct_keys:
+        source[key] = source1.get(key, 0) + source2.get(key, 0)
+
+    print(source)
+question5()
