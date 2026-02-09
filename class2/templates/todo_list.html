@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f6f8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .completed {
+            color: green;
+            font-weight: bold;
+        }
+        .not-completed {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Todo</th>
+                <th>Status</th>
+                <th>User ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in todos %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.todo }}</td>
+                <td class="{{ 'completed' if task.completed else 'not-completed' }}">
+                    {{ 'Completed' if task.completed else 'Not Completed' }}
+                </td>
+                <td>{{ task.userId }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

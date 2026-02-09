@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Spotify</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, rgba(85, 37, 130, 0.8), rgba(40, 20, 70, 0.9)),
+                  url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .welcome-text {
+      max-width: 700px;
+    }
+
+    .welcome-text h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #e0b3ff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .welcome-text p {
+      font-size: 1.5rem;
+      color: #f3e9ff;
+      line-height: 1.6;
+    }
+    .cta-button {
+        width: 100%;
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+
+    @media (max-width: 600px) {
+      .welcome-text h1 {
+        font-size: 2rem;
+      }
+
+      .welcome-text p {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-text">
+    <h1>Welcome to Spotify</h1>
+    <p>Unleash the rhythm. Feel the soul. Dive into sound like never before.</p>
+    <a href="/authorize"><button class="cta-button">Explore Music</button></a>
+  </div>
+</body>
+</html>

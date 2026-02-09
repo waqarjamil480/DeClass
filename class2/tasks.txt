@@ -1,0 +1,5 @@
+/todo/api/v1/get --- list all todos
+/todo/api/v1/get/<id> --- list specific todo against id
+/todo/api/v1/create --- create a new todo
+/todo/api/v1/delete/<id> --- delete a todo against the id
+/todo/api/v1/update/<id> --- update a todo against the id
