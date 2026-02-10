@@ -210,9 +210,6 @@ for todo in todo_list_dict['todos']:
     # print(f"Id = {todo['id']}\nTodo = {todo['todo']}\n")
     
 # iterating over python dictionary
-...
-
-
 developer_data_dict = {
     "name": "John Doe",
     "age": 30,

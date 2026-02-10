@@ -1,0 +1,1 @@
+{"name": "waqar jamil", "age": 30, "email": "johndoe@example.com", "is_active": true, "skills": ["Python", "Django", "REST API"], "address": {"street": "123 Main Street", "city": "Karachi", "country": "Pakistan"}}

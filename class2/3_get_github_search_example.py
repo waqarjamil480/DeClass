@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 params = {
     'q': 'python api',      # search keywords
@@ -9,8 +9,14 @@ params = {
 
 url = 'https://api.github.com/search/repositories'
 
-response = requests.get(url=url, params=params)
+response = requests.get(url, params)
+
 # Print the full response in text (JSON string)
 
+# done this in class
 response.text
-print(response.text)
+data = response.json()
+with open('git_search.json', 'w') as f:
+    json.dump(data,f)
+    print(response.text[1:20])
+

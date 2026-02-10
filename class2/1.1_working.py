@@ -1,6 +1,4 @@
 import  requests
-
-
 # dummy data api for testing
 response =requests.get('https://dummyjson.com/carts')
 # 200 means successful response
@@ -11,12 +9,14 @@ response.content
 type(response.content)
 type(response.json())
 
+
 if response:
     if response.status_code == 200:
        content = response.json()
-       content['carts'][0]['products']
-
-
+       print(content['carts'][0]['products'])
+    else:
+        print("Error: ", response.status_code)
        
-
+else:
+    print("Error: Response is None")
 
