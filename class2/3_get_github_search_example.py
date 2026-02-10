@@ -6,6 +6,7 @@ params = {
     'page': 1,
     'sort': 'updated'
 }
+# this is query parameters
 
 url = 'https://api.github.com/search/repositories'
 
