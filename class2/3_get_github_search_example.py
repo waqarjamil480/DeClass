@@ -7,7 +7,7 @@ params = {
     'sort': 'updated'
 }
 # this is query parameters
-
+    
 url = 'https://api.github.com/search/repositories'
 
 response = requests.get(url, params)
