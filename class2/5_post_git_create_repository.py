@@ -2,10 +2,10 @@ import requests, os
 from dotenv import load_dotenv
 
 # this loads the .env file in your python scripts and you can use the VARIABLES inside it.
-load_dotenv()
+load_dotenv("class2/.env", override=True)
 
 # here we are accessing the variable from .env file
-api_key = os.getenv("GIT_API_KEY")
+api_key = os.getenv("TOKEN")
 
 headers = {
     'Accept': 'application/vnd.github+json',
@@ -15,7 +15,7 @@ headers = {
 }
 
 data = '''{
-        "name": "Hello-World",
+        "name": "Hello-World2",
         "description": "This is your first repo!",
         "homepage": "https://github.com",
         "private": false,
@@ -27,7 +27,11 @@ response = requests.post(
     headers=headers, 
     data=data
 )
-
 response.status_code
 
-response.content
+
+
+
+
+
+
