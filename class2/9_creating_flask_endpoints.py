@@ -35,10 +35,17 @@ def product_details():
         "product_name": "shampoo",
         "is_available": False,
     }), 200
-    
+        
+
+
+#http://localhost:5000/product_details/api/v1/product_query?id=10&name=waqar&is_available=true
+
+# this will be with url query parameters   like ?q=10&tech=12
+# we will put these arg in url by our self then it will print    
 @app.route('/product_details/api/v1/product_query')
 def product_query():
     if request.args:
+        #http://localhost:5000/product_details/api/v1/product_query?id=10&name=waqar&is_available=true
         return jsonify({
             "product_id": request.args['id'],
             "product_name": request.args['name'],
