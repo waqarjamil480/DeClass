@@ -68,6 +68,7 @@
             border-radius: 20px;
             font-size: 12px;
             margin-right: 5px;
+            margin-bottom: 3px;
         }
 
     </style>
@@ -79,9 +80,16 @@
 <div class="container">
     {% for recipe in recipes %}
     <div class="card">
-        <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
+        <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">
+            <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
+        </a>
         <div class="card-content">
-            <h2>{{ recipe.id }} - {{ recipe.name }}</h2>
+            <h2>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" 
+                style="text-decoration:none; color:#2c3e50;">
+                    {{ recipe.id }} - {{ recipe.name }}
+                </a>
+            </h2>
 
             <div class="info">
                 Cuisine: <strong>{{ recipe.cuisine }}</strong> |
@@ -115,6 +123,28 @@
         </div>
     </div>
     {% endfor %}
+</div>
+
+<div style="text-align:center; margin-top:30px;">
+
+    {% if page > 1 %}
+        <a href="{{ url_for('recipes_app', page=page-1) }}"
+           style="padding:10px 15px; background:#3498db; color:white; text-decoration:none; border-radius:5px;">
+            Previous
+        </a>
+    {% endif %}
+
+    <span style="margin:0 15px; font-weight:bold;">
+        Page {{ page }} of {{ total_pages }}
+    </span>
+
+    {% if page < total_pages %}
+        <a href="{{ url_for('recipes_app', page=page+1) }}"
+           style="padding:10px 15px; background:#3498db; color:white; text-decoration:none; border-radius:5px;">
+            Next
+        </a>
+    {% endif %}
+
 </div>
 
 </body>
