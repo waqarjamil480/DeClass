@@ -20,6 +20,3 @@ def recipe_details():
     return render_template('recipes.html', recipes=recipes)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000', debug=True)
-
-
-
