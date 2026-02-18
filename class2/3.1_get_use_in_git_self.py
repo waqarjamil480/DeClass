@@ -5,12 +5,13 @@ headers = {
 }
 api_url = 'https://api.github.com/search/users'
 params = {
-    'q': 'waqarjamil480',
+    'q': 'wahab'
 }
 
 response = requests.get(api_url, params)
 response.headers
 response.status_code
+response.url
 # print(response.url)
 if response:
     if response.status_code == 200:

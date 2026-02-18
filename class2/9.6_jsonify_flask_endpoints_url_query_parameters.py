@@ -56,7 +56,7 @@ def product_details():
         print('Please mention query parameters when sending request')
 
 
-
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port ='5000', debug=True)
 

@@ -1,7 +1,7 @@
 import requests, json
 
 params = {
-    'q': 'python api',      # search keywords
+    'q': 'waqar',      # search keywords
     'per_page': 10,          # limit results to 10
     'page': 1,
     'sort': 'updated'
@@ -20,4 +20,3 @@ data = response.json()
 with open('git_search.json', 'w') as f:
     json.dump(data,f)
     print(response.text[1:20])
-
