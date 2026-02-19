@@ -29,8 +29,6 @@ app = Flask(__name__)
 } """
 
 
-
-
 @app.route('/todo/api/v1/', methods=['GET'])
 def todo_all_list():
     response = requests.get('https://dummyjson.com/todos')
@@ -41,6 +39,8 @@ def todo_all_list():
     else:
         error = f"Error: API returned status code {code}"
         return render_template('todo_list.html', error=error)
+    
+  
     
 # @app.route('/todo/api/v1/', defaults={'id': 1, 'id2': 5}, methods=['GET'])
 @app.route('/todo/api/v1/<int:id>/<int:id2>', methods=['GET'])
@@ -65,8 +65,9 @@ def todo_list(id, id2):
 
  #/to/api/v1/create  -- create a new todo
 
+# id=31  whill be auto because choose last id and add 1 to it
+#localhost:5000/todo/api/v1/create?todo=hellow&status=true
 
-#localhost:5000/todo/api/v1/create?id=31&todo=hellow&status=true
 @app.route('/todo/api/v1/create', methods=['GET'])
 def create_todo():
     response = requests.get('https://dummyjson.com/todos')
@@ -74,12 +75,35 @@ def create_todo():
     if code == 200: 
 
       all_data = response.json()['todos']
+      last_id = all_data[-1]['id'] + 1
       new_todo={
-          'id': request.args.get('id', 30), 
+          'id': last_id, 
           'todo': request.args.get('todo', 'default todo - please provide todo text in url query parameter'), 
           'completed': request.args.get('status', False)
       }
-      all_data.append(new_todo)
+      all_data_copy = all_data.copy()
+      all_data_copy.append(new_todo)
+
+      return render_template('todo_list.html', todos=all_data_copy)
+  
+    else:
+        error = f"Error: API returned status code {code}"
+        return render_template('todo_list.html', error=error)
+
+
+# will delete the id 2 
+# http://localhost:5000/todo/api/v1/delete/2
+@app.route('/todo/api/v1/delete/<int:id>', methods=['GET'])
+def delete_todo(id):
+    response = requests.get('https://dummyjson.com/todos')
+    code = response.status_code
+    if code == 200: 
+
+      all_data = response.json()['todos']
+      for todo in all_data: 
+          if todo['id'] == id:  # if the id in api == id in url parameter
+            all_data.remove(todo)
+            break
       return render_template('todo_list.html', todos=all_data)
   
     else:
@@ -88,9 +112,3 @@ def create_todo():
 
 if __name__ =='__main__':
     app.run(host = '0.0.0.0', port = '5000', debug= True)
-
-
-
-
-
-
