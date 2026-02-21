@@ -9,7 +9,7 @@
             "url": "https://news.google.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "\"Google News: because you can't get too much of India's exciting news, 24/7, in one place 📰😂\""
+            "humorous_news": "\"Google's news aggregator has got India covered, and by covered, we mean it has all our drama, politics, and cricket news in one place 📰👍\""
         },
         {
             "id": 2,
@@ -18,7 +18,7 @@
             "url": "http://www.thehindu.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "\"India's oldest newspaper, The Hindu, still trying to keep up with the news 😂📰, while we're over here trying to keep up with our socials 📱.\""
+            "humorous_news": "📰👀 India's oldest newspaper, The Hindu, is still going strong - because who needs social media when you have print and a whole lot of page-turning drama 🤣📰."
         },
         {
             "id": 3,
@@ -27,7 +27,7 @@
             "url": "http://timesofindia.indiatimes.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "📰 \"Breaking News: We've got it all, from cricket to Bollywood gossip, because you can't live without our drama-filled updates 🤣💁‍♀️📰\""
+            "humorous_news": "📰 \"Breaking News: Times of India has got it all - politics, sports, Bollywood gossip, and more... because who needs a life when you can get it all in one app 🤣\" 👍"
         }
     ]
 }

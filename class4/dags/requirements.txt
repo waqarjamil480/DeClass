@@ -1,4 +1,0 @@
-apache-airflow-providers-fab
-pymysql
-apache-airflow-providers-mysql==6.3.3
-apache-airflow-providers-http --upgrade

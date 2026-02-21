@@ -1,7 +1,0 @@
-sudo apt update
-sudo apt install default-libmysqlclient-dev build-essential pkg-config python3-dev
-sudo apt install mysql-client -y
-
-
-
-pip install apache-airflow-providers-mysql
