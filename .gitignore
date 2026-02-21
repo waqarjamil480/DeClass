@@ -1,1 +1,38 @@
 .env
+# Airflow
+logs/
+airflow-webserver.pid
+airflow.cfg
+webserver_config.py
+.airflowignore
+
+# Airflow local settings
+config/
+plugins/__pycache__/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.python-version
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.env
+docker-compose.override.yml
+docker-compose.yaml
+uv.lock
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

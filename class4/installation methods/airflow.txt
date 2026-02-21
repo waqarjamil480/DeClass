@@ -1,0 +1,27 @@
+How to Install Apache Airflow on Docker:
+
+1) create a folder in your drive e.g. D with name 'airflow'
+
+2) create below folders in your folder:
+- plugins
+- logs
+- dags
+- config
+
+3) Download docker-compose.yaml file and place in the same airflow folder.
+
+4) Create .env file and use AIRFLOW_UID=50000 environment variable in it.
+
+5) pip install uv
+
+6) uv init
+
+7) uv sync
+
+8) .\.venv\Scripts\activate
+
+9) uv add apache-airflow
+
+10) docker-compose up -d
+
+11) Check localhost:8080 on your browser to access airflow using airflow as username and password both.
