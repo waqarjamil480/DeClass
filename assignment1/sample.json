@@ -1,0 +1,33 @@
+{
+    "id": "chatcmpl-2f428f61-2b39-493d-8731-bced38733dea",
+    "object": "chat.completion",
+    "created": 1771607816,
+    "model": "llama-3.1-8b-instant",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "🚨🌎 Breaking News: The world's expiration date is 2028, so let's party like it's 2027! 🎉🍻👋"
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "queue_time": 0.013607842,
+        "prompt_tokens": 72,
+        "prompt_time": 0.004161241,
+        "completion_tokens": 40,
+        "completion_time": 0.185767902,
+        "total_tokens": 112,
+        "total_time": 0.189929143
+    },
+    "usage_breakdown": null,
+    "system_fingerprint": "fp_ff2b098aaf",
+    "x_groq": {
+        "id": "req_01khy0vxzffr2vw7ww21dqm7y9",
+        "seed": 1333197457
+    },
+    "service_tier": "on_demand"
+}

@@ -44,16 +44,19 @@ app = Flask(__name__)
 # http://localhost:5000/product/details?id=12&name=bottle
 # this will return json response
 def product_details():
-    if request.args:
-        pro_details={
-            "product_id": request.args.get('id', 12),
-            "product_name": request.args.get('name','ac'),
-            "product_quntity": request.args.get('qty', 100),
-            "product_availability": request.args.get('available', False),
-        }
-        return jsonify(pro_details), 200
-    else:
-        print('Please mention query parameters when sending request')
+    if not request.args:
+        return jsonify({
+            "error": "Missing query parameters",
+            "message": "Please provide product details like ?id=1&name=abc&qty=10&available=true"
+        }), 400   # 400 = Bad Request
+
+    pro_details={
+        "product_id": request.args.get('id', 12),
+        "product_name": request.args.get('name','ac'),
+        "product_quntity": request.args.get('qty', 100),
+        "product_availability": request.args.get('available', False),
+    }
+    return jsonify(pro_details), 200
 
 
     

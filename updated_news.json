@@ -1,0 +1,33 @@
+{
+    "status": "success",
+    "length": 3,
+    "data": [
+        {
+            "id": 1,
+            "title": "Google News (India)",
+            "original_description": "Comprehensive, up-to-date India news coverage, aggregated from sources all over the world by Google News.",
+            "url": "https://news.google.com",
+            "country": "in",
+            "category": "general",
+            "humorous_news": "\"Google News: because you can't get too much of India's exciting news, 24/7, in one place 📰😂\""
+        },
+        {
+            "id": 2,
+            "title": "The Hindu",
+            "original_description": "The Hindu. latest news, analysis, comment, in-depth coverage of politics, business, sport, environment, cinema and arts from India's national newspaper.",
+            "url": "http://www.thehindu.com",
+            "country": "in",
+            "category": "general",
+            "humorous_news": "\"India's oldest newspaper, The Hindu, still trying to keep up with the news 😂📰, while we're over here trying to keep up with our socials 📱.\""
+        },
+        {
+            "id": 3,
+            "title": "The Times of India",
+            "original_description": "Times of India brings the Latest News and Top Breaking headlines on Politics and Current Affairs in India and around the World, Sports, Business, Bollywood News and Entertainment, Science, Technology, Health and Fitness news, Cricket and opinions from leading columnists.",
+            "url": "http://timesofindia.indiatimes.com",
+            "country": "in",
+            "category": "general",
+            "humorous_news": "📰 \"Breaking News: We've got it all, from cricket to Bollywood gossip, because you can't live without our drama-filled updates 🤣💁‍♀️📰\""
+        }
+    ]
+}
