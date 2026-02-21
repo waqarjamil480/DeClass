@@ -1,0 +1,167 @@
+pwd: print current working directory
+ls: list directory files and folders
+cd: change directory
+mkdir: creates a new directory
+touch: creates a new file
+wc: word count command -l = lines, -w = words, -c = characters
+cat: prints the file contents on the terminal
+head: to see the top lines of the files
+tail: to see the bottom lines of the files
+mv: to move a file from one destination to another or to rename
+cp: to copy a file from one destination to another
+rm: to remove a file/folder
+grep: to search text in a file
+
+
+# 1. List files in current directory
+ls
+
+# 2. List with details (permissions, size, date, owner, etc.)
+ls -l
+
+# 3. Show hidden files (starting with .)
+ls -a
+
+# 4. Combine detailed list + hidden files
+ls -la
+
+# 5. Human-readable sizes
+ls -lh
+
+# 6. Sort by modification time (newest first)
+ls -lt
+
+# 7. Reverse sort order
+ls -lr
+
+# 8. Sort by file size (largest first)
+ls -lS
+
+# 9. Recursive listing of subdirectories
+ls -R
+
+# 10. Only list directories
+ls -d */
+
+# 11. List files with a specific extension
+ls *.txt
+
+#To create a new directory directory
+mkdir kai-data-engineering
+
+#To create a file
+touch kai-data-file.txt
+
+#To move to the root directory
+cd /
+
+#To move to the home directory
+cd ~
+
+
+#To count line, words, characters in a file
+wc -lwc kai-data-file.txt
+
+#To see/print the contents of the files 
+cat kai-data-file.txt
+
+#To add contents to the files or replace the entire file content
+cat 'Hello World' > kai-data-file.txt
+
+#To concatenate contents to the files
+cat 'Hello World' >> kai-data-file.txt
+
+#To concatenate file1 data with file2 data
+cat kai-data-file.txt kai-data-file-copy.txt
+
+# to see the first line of the file
+head -n 1 kai-data-file.txt
+
+# to see the last line of the file
+tail -n 1 kai-data-file.txt
+
+# egrep Metacharacter Examples
+# Use: Save this file as egrep_examples.sh, then run: bash egrep_examples.sh
+# Make sure you have a sample file named sample.txt to test against
+
+# ---------------------------------------
+# Match any single character except newline
+egrep "c.t" sample.txt      # Matches: cat, cot, cut, c9t
+
+# Match start of line
+egrep "^The" sample.txt     # Matches lines starting with "The"
+
+# Match end of line
+egrep "end$" sample.txt     # Matches lines ending with "end"
+
+# Character set: match one character from [aeiou]
+egrep "c[aeiou]t" sample.txt  # Matches: cat, cot, cut
+
+# Negated set: match one char NOT in [aeiou]
+egrep "c[^aeiou]t" sample.txt # Matches: c1t, cxt (but not cat)
+
+# Zero or more occurrences (*)
+egrep "s*as" sample.txt     # Matches: as, sas, ssas, sssas
+
+# One or more occurrences (+)
+egrep "s+as" sample.txt     # Matches: sas, ssas, sssas (must have at least one s)
+
+# Zero or one occurrence (?)
+egrep "colou?r" sample.txt  # Matches: color, colour
+
+# Exactly n occurrences
+egrep "a{3}" sample.txt     # Matches: aaa
+
+# n or more occurrences
+egrep "a{2,}" sample.txt    # Matches: aa, aaa, aaaa...
+
+# Between n and m occurrences
+egrep "a{2,4}" sample.txt   # Matches: aa, aaa, aaaa (but not aaaaa)
+
+# Grouping ()
+egrep "(ab)+" sample.txt    # Matches: ab, abab, ababab
+
+# Alternation (OR)
+egrep "cat|dog" sample.txt  # Matches: cat OR dog
+
+# Escaping a metacharacter
+egrep "\." sample.txt       # Matches a literal . (period)
+
+
+# ----------------------------------------------------------
+# Search text or regex in an entire directory (Linux/Unix)
+# Save as: search_examples.sh
+# Usage: bash search_examples.sh
+# Replace /path/to/directory with your actual folder
+# ----------------------------------------------------------
+
+# 1. Basic text search (recursive)
+grep -r "search_text" /path/to/directory
+
+# 2. Case-insensitive search
+grep -ri "search_text" /path/to/directory
+
+# 3. Search using regex with egrep (Extended grep)
+# Example: Match "color" or "colour"
+egrep -r "colou?r" /path/to/directory
+
+# 4. Show line numbers in results
+grep -rn "search_text" /path/to/directory
+
+# 5. Show only file names containing the match
+grep -rl "search_text" /path/to/directory
+
+# 6. Limit search to certain file types (txt, md)
+grep -rn --include="*.{txt,md}" "search_text" /path/to/directory
+
+# 7. Exclude certain directories from search
+grep -rn --exclude-dir={node_modules,venv} "search_text" /path/to/directory
+
+# 8. Match whole word only
+grep -rw "word" /path/to/directory
+
+# 9. Search for a pattern at the start of a line
+grep -r "^pattern" /path/to/directory
+
+# 10. Search for a pattern at the end of a line
+grep -r "pattern$" /path/to/directory

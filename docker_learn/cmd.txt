@@ -1,0 +1,7 @@
+docker -v
+docker-compose -v
+docker images
+docker ps (to see all containers not running)
+docker ps -a  (to see all containers running)
+docker rmi hell-world    (to remove images)
+docker rm  usecopy ide    (to deleter container)
