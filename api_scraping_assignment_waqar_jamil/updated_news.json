@@ -9,7 +9,7 @@
             "url": "https://news.google.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "\"India updates in a nutshell 🌟: Google News aggregates all the drama, spice, and politics, so you don't have to 📰!\""
+            "humorous_news": "📰 Google News finally figured out India has more than 1 news source! 🤣"
         },
         {
             "id": 2,
@@ -18,7 +18,7 @@
             "url": "http://www.thehindu.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "\"India's oldest newspaper still trying to keep up with social media 😂💻📰\""
+            "humorous_news": "\"India's national newspaper 📰, where you can read about politics, business, and who ate the last samosa 🥗\""
         },
         {
             "id": 3,
@@ -27,7 +27,7 @@
             "url": "http://timesofindia.indiatimes.com",
             "country": "in",
             "category": "general",
-            "humorous_news": "\"Breaking news: We've got news for EVERYTHING 📰🤯, from cricket to Bollywood gossip, because who doesn't want to know about Ranveer's new haircut? 🤣\""
+            "humorous_news": "\"BREAKING NEWS 📺📰: We've got the scoop on everything... except what's for lunch 🍔😂 - India's one-stop-shop for all your news cravings!\""
         }
     ]
 }

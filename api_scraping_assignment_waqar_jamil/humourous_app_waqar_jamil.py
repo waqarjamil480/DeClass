@@ -198,37 +198,11 @@ def humor_news():
     # Save to file
 
 
-
-
     return jsonify({
         "message": "Saved to updated_news.json",
         "total_results": len(news_list),
         "data": news_list
     }), 200
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
