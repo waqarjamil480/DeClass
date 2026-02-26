@@ -11,7 +11,7 @@ default_args = {
 
 
 @dag(
-    dag_id="python_operator_dag",
+    dag_id="python_operator_dag_6",
     default_args=default_args,
     description="A simple tutorial DAG",
     schedule=None,
@@ -25,7 +25,7 @@ def python_operator_dag():
     def save_greeting_message(user, ti=None):
 
         message = f"Welcome {user} to airflow class"
-
+          #method ti.xcom_push is method 
         ti.xcom_push(key="message", value=message)
 
 

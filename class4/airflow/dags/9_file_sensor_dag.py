@@ -3,7 +3,7 @@ from airflow.sdk import dag, task
 from airflow.sensors.filesystem import FileSensor
 
 @dag(
-    dag_id='file_sensor_dag',
+    dag_id='file_sensor_dag_9',
     start_date=datetime(2025, 8, 15),
     schedule=None,
     catchup=False,
@@ -18,7 +18,7 @@ def file_sensor_dag():
 
     wait_for_file = FileSensor(
         task_id='wait_for_file',
-        filepath='/opt/airflow/dags/files/input_data.txt',
+        filepath='input_data.txt',
         poke_interval=10,
         timeout=600,
         mode='reschedule',        # frees worker

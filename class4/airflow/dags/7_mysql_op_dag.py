@@ -1,6 +1,7 @@
 from airflow.sdk import dag, task
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 from datetime import datetime, timedelta
+#in setting > connection > mysql > host=host.docker.internal
 
 MYSQL_CONN_ID = "my_mysql_conn"
 
@@ -12,7 +13,7 @@ default_args = {
 }
 
 @dag(
-    dag_id="mysql_operator_dag",
+    dag_id="mysql_operator_dag_7",
     default_args=default_args,
     description="A simple tutorial DAG",
     schedule=None,

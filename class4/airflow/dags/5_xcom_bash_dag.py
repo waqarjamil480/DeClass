@@ -11,7 +11,7 @@ default_args = {
 
 
 @dag(
-    dag_id="xcom_bash_dag",
+    dag_id="xcom_bash_dag_5",
     default_args=default_args,
     description="A simple tutorial DAG",
     schedule=None,
@@ -26,12 +26,14 @@ def xcom_bash_dag():
     )
     def save_bash_data_xcom_task():
         return 'echo "Hello Xcom. This is my second push"'
+        # this will save the value in xcom key "save_bash_data_xcom"
 
 
     @task.bash(
         task_id="load_bash_data_xcom"
     )
     def load_bash_data_xcom_task():
+        #used the key define above for xcom and now by calling key "save_bash_data_xcom" it will show saved value from xcom
         return "echo '{{ ti.xcom_pull(\"save_bash_data_xcom\") }}'"
 
 
