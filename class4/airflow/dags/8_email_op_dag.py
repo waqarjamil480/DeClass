@@ -13,7 +13,7 @@ def send_email_dag():
 
     send_email_task = EmailOperator(
         task_id="send_email_task",
-        to=["waqarjamil488@gmail.com", "waqarjamil481@gmail.com"], 
+        to=["waqarjamil488@gmail.com", "nidaghaffar014@gmail.com"], 
         # to="waqarjamil488@gmail.com",                   # recipient email
         subject="Airflow 4 EmailOperator Test",     # email subject
         html_content="<h3>Hello from Airflow 3!</h3>",  # email body
