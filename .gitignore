@@ -17,6 +17,7 @@ __pycache__/
 *.pyd
 *.log
 *.python-version
+consumer-complaints-etl.json
 
 # Database
 *.db
