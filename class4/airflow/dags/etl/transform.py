@@ -60,4 +60,13 @@ def transform_data(**kwargs):
     transform_df.to_csv('/opt/airflow/dags/etl/data/consumer_complaints_transformed.csv', index=False)
     print("saved successfully")
 
+
+    # easy way to store data
+    # df = pd.read_sql(query, hook.get_conn())
+
+    # # Save CSV for FileSensor
+    # df.to_csv('dags/data/summary.csv', index=False)
+
+
+
     return "CSV saved."
