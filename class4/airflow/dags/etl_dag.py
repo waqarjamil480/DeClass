@@ -80,3 +80,4 @@ with DAG(
     )
 
     extract_task >> dump_mysql_task >> transform_task >> check_file_task >> load_task >> send_email_task
+    

@@ -1,0 +1,63 @@
+4TH VIDEO   CREATE DB AND TABLE
+-------------------------------
+CREATE DATABASE OF NOT EXISTS school;
+
+USE school;
+
+CREATE TABLE IF NOT EXISTS students(
+id INT AUTO_INCREMENT PRIMARY_KEY,
+first_name VARCHAR(50),
+last_name VARCHAR(50),
+);
+
+
+
+
+5th video   INSERT, UPDATE, DELETE, ALTER
+----------------------------------------------
+INSERT
+
+1). two methods of insert if we know we have 3 column and want to add all 3 
+so this will work
+
+
+INSERT INTO students VALUES('1', 'WAQAR', 'JAMIL')
+
+2). If we want to add mutiple row and column
+
+INSERT INTO students (id, first_name, last_name) VALUES ('2','HAMZA','JAMIL'),('3','JAMIL','AHMED');
+
+3). If we want to add data in desire column 
+INSERT INTO students (first_name) VALUES('NAME1'),('NAME2'),('NAME3');
+--> ADD 2nd column name and add values for 2nd column and so on 
+
+
+UPDATE
+
+UPDATE students SET first_name='zooha1', last_name='jamil1' WHERE ID = 1
+
+
+DELETE
+
+DELETE FROM students where id=1 
+
+
+ALTER --> ADD COLUMN, DROP COLUMN, MODIFY COLUMN, CHANGE COLUMN
+
+ALTER TABLE students ADD COLUMN email VARCHAR(100);
+ALTER TABLE students DROP COLUMN email;
+ALTER TABLE students MODIFY COLUMN  email 
+
+
+
+DROP, TRUNCATE 
+
+DROP TABLE students;  --> will delete overall table 
+
+TRUNCATE TABLE students; --> empty the table
+
+
+
+
+
+

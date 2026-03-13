@@ -1,0 +1,147 @@
+SQL = Structured query language  (we use for interact with database)
+
+SELECT * FROM TABLEname  (will show table with all data)
+SELECT customer_id, customer_city FROM TABLEname (will show desire 2 cols data)
+
+SELECT * FROM ecommerce.customers;  
+(if clicked on other database tab so this ecommerce means select data from desire ecommerce database)
+
+use ecommerce (it will auto click tab of ecommerce);
+
+select * from customers where customer_state = "SINDH"; 
+(Will show all data only from customer_state == SINDH)
+
+
+select * from payments where payment_type = "MCB" and payment_value >= 500; 
+(will show all data where payment is from MCB BANK AND PAYMENT VALUE IS  500 OR 500+)
+
+select * from payments where payment_type = "MCB" and payment_value >= 500 and payment+install= 2;
+
+select * from payments where payment_type = "MCB" or payment_type = "NBP";
+(will show all data from payments table from MCB OR NBP)
+
+select * from payments where not(payment_type = "MCB" or payment_type = "NBP");
+(will show all data from payments table but exclude any one either MCB or NBP)
+ 
+between operator 
+select * from payments where payment_value between 150 and 200;
+(will show all data where payment_value  is from 150 to 200 we can also do this by >= and <= but this is short query)
+
+in operator
+select * from payments where payment_type in ("MCB","HBL",NBP,UBL);
+(SHOW ALL DATA FROM MCB, HBL, NBP, UBL)
+ 
+not in operator
+select * from payments where payment_type not in ("MCB","HBL",NBP,UBL);
+(show all data excluding MBB,HBL.NBP,UBL)
+
+
+like operator
+select customer_city from customers  where customer_city like "r%";
+(show all city from customers which start from  r)
+
+select customer_city from customers  where customer_city like "%r";
+(show all city from customers which end from  r)
+
+select customer_city from customers  where customer_city like "%de";
+(show all city from customers which have de in name either in mid , end , start)
+
+orderby
+select * from payments order by payment_value;
+(will show all data from payments table assending by payment_value col 0,1,2,3)
+
+order by  dec
+select * from payments order by payment_value dec;
+(will show all data from payments table decending by payment_value col 10,9,9,8..)
+
+
+select * from payments order by payment_value, payment_type desc;
+(will show payment_value like 0,1,2...9, and payment_type like 10,9,..)
+
+select * from payments where payment_installment = 1 order by payment_value; 
+(show all data from payment table when payme is 1 and show all in assending order)
+
+select * from payments where payment_installment = 1 order by payment_value dec;
+
+Limit
+select * from payments limit 5;
+(will show any 5 rows)
+
+select * from payments limit 2,3;
+(show shop top 3 row after excluding top 2 means  3,4,5th row)
+
+
+sum fuction 
+
+select sum(payment_value) from payments; 
+(will show sum of all payment_value  from payments table)
+
+
+select sum(payment_value)as total_revenue from payments; 
+(will show sum of all payment_value in a new col total_revenue  data from payments table)
+
+
+select round(sum(payment_value),2)as total_revenue from payments; 
+(will show sum of all payment_value in a new col total_revenue with 2 decimal places  data from payments table) 
+
+
+select max(payment_value) from payments;
+ (will show max payment_value data from table payments)
+select min(payment_value) from payments;
+
+select avg(payment_value) from payments;
+select round(avg(payment_value),2) from payments;
+
+count 
+select count(customer_id) from customers;
+(will show all number of customers, it counts number of rows in col)
+what if select count(customer_city) from customers;
+
+
+distinct 
+select distinct customer_city from customers
+(will show all cities like one city only one time)
+
+select count(distinct customer_city) from customers
+(will show total number of cities no repeated  city)
+
+textual functions 
+length
+select seller_city, length(seller_city) from seller
+(will show all seller_city cols with length of char)
+ 
+trim = remove white spaces
+select seller_city, length(trim(seller_city)) from sellers;
+(will show all seller_city cols with length of char by removing white spaces)
+
+select upper(seller_city) from seller;
+(will show all cities from table seller in upper case)
+
+
+lower and upper 
+select upper(seller_city), lower(seller_city) from sellers;
+
+select seller_city, replace(seller_city, "a", "i") from sellers;
+(show seller_city col and all seller_city which have "a" will be replaced with "i"  like campinas == cimpinis)
+
+
+join 
+select concat(seller_city, seller_state) from sellers;
+will show like karachiSindh
+select concat(seller_city," ",seller_state) from sellers;
+
+select concat(seller_city," - ",seller_state) as city_state from sellers;
+
+
+date and time functions
+
+select order_delivered_customer_date from orders;
+
+
+select order_delivered_customer_date, 
+day(order_delivered_customer_date) 
+month(order_delivered_customer_date)
+from orders;
+
+
+
