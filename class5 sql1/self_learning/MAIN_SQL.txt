@@ -1,3 +1,55 @@
+Topics i have covered 
+
+DDL, DML 
+
+DDL is used to define, modify, or remove the structure (schema) of database objects 
+(like tables, indexes, and views).It Provide the structure to store the data rather than using the stored data for it self
+ 
+CREATE, ALTER, DROP, TRUNCATE, and RENAME
+
+
+DML is used to manipulate, add, retrieve, or update the data stored inside the database objects. 
+If DDL is the architect, DML is the builder moving furniture in and out of the rooms.
+
+INSERT , UPDATE, DELETE , SELECT
+
+
+
+Dataware house 
+
+DROP, TRUNCATE, ALTER (ADD COLUMN, DROP COLUMN, ALTER COLUMN OR MODIFY COLUMN, CHANGE COLUMN)
+create tables and databases
+insert, update, delete, select (where, distinct clasue)
+
+COMPERRISSION OPERATORS, AIRTHAMETIC OPERATORS, BIT WISE OPERATORS, 
+LOGICAL OPERATORS(AND, OR, NOT, BETWEEN, IN, NOTIN, INS NULL, IS NOT NULL )
+LIKE %, _
+
+COUNT 
+
+STRING FUNCTIONS (UPPER() , LOWER(), LENGTH(), SUBSTRING(), NOW(), FROMAT(), CONCAT(), REPLACE(), TRIM())
+
+AGGREGATE FUNCTIONS
+
+COUNT(), SUM(), AVG(), MAX(), MIN(), ROUND()    --> 
+
+
+GROUP BY AND HAVING CLAUSE
+
+TIME, DATE, YEAR, TIMESTAMP, TIMESTAMPTZ,
+
+TIME STAMP FUNCTIONS: TIMEZONE(), NOW, TIMEOFDAY(), CURRENT_TIME(), CURRENT_DATE 
+
+EXTRACT FUNCTIONS: SELECT EXTRACT(MONTH FROM date_field) FROM TABLE
+YEAR, QUARTER, MONTH, WEEK, DAY, HOUR, MINUTE, DOW, DOY 
+
+
+
+
+
+
+
+
 4TH VIDEO   CREATE DB AND TABLE
 -------------------------------
 CREATE DATABASE OF NOT EXISTS school;
@@ -55,9 +107,4 @@ DROP, TRUNCATE
 DROP TABLE students;  --> will delete overall table 
 
 TRUNCATE TABLE students; --> empty the table
-
-
-
-
-
 
