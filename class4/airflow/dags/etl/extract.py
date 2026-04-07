@@ -26,7 +26,7 @@ from datetime import date, timedelta
 
 def extract(**kwargs):
     api_url = 'https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/'
-    size = 500  # Following fixed required data as per doc
+    size =   500 # Following fixed required data as per doc
     all_states = 'https://gist.githubusercontent.com/mshafrir/2646763/raw/8b0dbb93521f5d6889502305335104218454c2bf/states_hash.json'
 
     #  User-Agent so that it will not block us on many requests
