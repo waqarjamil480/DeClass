@@ -1,0 +1,60 @@
+db.restaurants.find({});    empty filter
+it  
+it 
+
+
+projetion 
+1=include  0=exclude
+cls
+
+
+
+
+
+db.restaurants.find({}, {"name":1});
+db.restaurants.find({}, {"name":1, "_id":0});   (in this condition exclude only work with id)
+
+
+db.restaurants.find({}, {"name":1, "address": 0});  will throw error
+
+
+
+db.restaurants.find();
+
+
+db.restaurants.find({},{ restaurant_id: 1, name: 1, borough: 1, cuisine: 1 })
+
+
+db.restaurants.find({$and: [{ cuisine: { $ne: "American " } },{ "grades.score": { $gt: 70 } },{ "address.coord": { $lt: -65.754168 } }]})
+
+
+
+
+
+db.restaurants.find({cuisine: { $ne: "American " },"grades.score": { $gt: 70 },"address.coord": { $lt: -65.754168 }})
+
+
+
+db.restaurants.find(
+  { cuisine: { $ne: "American " }, "grades.grade": "A", borough: { $ne: "Brooklyn" }}, 
+  { restaurant_id: 1, name: 1, borough: 1, cuisine: 1, _id: 0 } ).sort({ cuisine: -1 })
+  
+  
+  
+  
+db.restaurants.find(
+  { name: /^Wil/ }, { restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+)
+
+
+
+db.restaurants.find( { name: /ces$/ },
+{ restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+)
+
+
+
+db.restaurants.find(
+  { name: /Reg/ },
+  { restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+)

@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoSQL with MongoDB — One-Day Class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ==========================================================
+     Sleek MongoDB Mastery — design system
+     ========================================================== */
+  :root {
+    --forest:        #023430;
+    --spring:        #00ed64;
+    --slate:         #111827;
+    --smoke:         #6b7280;
+    --paper:         #ffffff;
+    --fog:           #f3f4f6;
+    --fog-2:         #fcfcfc;
+    --sql:           #1e40af;
+    --nosql:         #065f46;
+    --warning:       #b45309;
+    --warning-bg:    #fef3c7;
+    --danger:        #b91c1c;
+    --danger-bg:     #fee2e2;
+    --shadow:        0 20px 25px -5px rgba(0,0,0,.10), 0 10px 10px -5px rgba(0,0,0,.04);
+    --radius:        14px;
+    --radius-sm:     8px;
+    --sans:          'Inter', system-ui, -apple-system, sans-serif;
+    --mono:          'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: var(--sans);
+    color: var(--slate);
+    background: var(--fog);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ==========================================================
+     Application shell (sidebar + main)
+     ========================================================== */
+  .app { display: flex; height: 100vh; width: 100vw; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--forest);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar-brand {
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar-brand .leaf {
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: var(--spring);
+    border-radius: 2px;
+    margin-right: 10px;
+    transform: rotate(45deg);
+  }
+  .sidebar-brand .title {
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: .02em;
+  }
+  .sidebar-brand .sub {
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,.5);
+  }
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+  .sidebar-nav::-webkit-scrollbar { width: 6px; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 3px; }
+  .nav-group { padding: 6px 0; }
+  .nav-label {
+    padding: 12px 20px 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: rgba(255,255,255,.45);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: rgba(255,255,255,.78);
+    border-left: 3px solid transparent;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .nav-item:hover { background: rgba(255,255,255,.04); color: var(--paper); }
+  .nav-item.active {
+    background: rgba(0,237,100,.06);
+    color: var(--paper);
+    border-left-color: var(--spring);
+  }
+  .nav-item .idx {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,.4);
+    min-width: 22px;
+  }
+  .nav-item.active .idx { color: var(--spring); }
+  .sidebar-foot {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,.5);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---------- Main column ---------- */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--fog);
+    overflow: hidden;
+  }
+  .header {
+    height: 64px;
+    background: var(--paper);
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 18px;
+  }
+  .header .crumbs {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--smoke);
+  }
+  .header .crumbs strong {
+    color: var(--slate);
+    font-weight: 600;
+  }
+  .header .crumbs .sep { color: #d1d5db; }
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid #e5e7eb;
+    background: var(--paper);
+    color: var(--slate);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .btn:hover { background: var(--fog); }
+  .btn.primary {
+    background: var(--forest);
+    color: var(--paper);
+    border-color: var(--forest);
+  }
+  .btn.primary:hover { background: #034a44; }
+  .btn .kbd {
+    font-family: var(--mono);
+    font-size: 10px;
+    background: var(--fog);
+    color: var(--smoke);
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  .btn.primary .kbd { background: rgba(255,255,255,.12); color: rgba(255,255,255,.7); }
+
+  /* ---------- Stage ---------- */
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    overflow: hidden;
+  }
+  .canvas {
+    width: 100%;
+    max-width: 1240px;
+    aspect-ratio: 16 / 9;
+    background: var(--paper);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Slide ---------- */
+  .slide {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    padding: 0;
+    animation: fadeIn .18s ease-out;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* signature header strip */
+  .slide-header {
+    padding: 28px 56px 18px 56px;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+  }
+  .slide-header::before {
+    content: '';
+    position: absolute;
+    left: 32px;
+    top: 28px;
+    bottom: 18px;
+    width: 6px;
+    background: var(--spring);
+    border-radius: 3px;
+  }
+  .slide-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--smoke);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .slide-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--smoke); }
+  .slide-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--forest);
+    margin: 0;
+    letter-spacing: -.01em;
+    line-height: 1.15;
+  }
+  .slide-subtitle {
+    margin-top: 6px;
+    font-size: 16px;
+    color: var(--smoke);
+    font-weight: 400;
+  }
+  .slide-body {
+    padding: 28px 56px 32px 56px;
+    flex: 1;
+    overflow: auto;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--slate);
+  }
+  .slide-body > *:first-child { margin-top: 0; }
+  .slide-body > *:last-child { margin-bottom: 0; }
+  .slide-body p { margin: 12px 0; }
+  .slide-body strong { color: var(--forest); font-weight: 700; }
+  .slide-body em { color: var(--slate); }
+  .slide-body ul, .slide-body ol { margin: 12px 0; padding-left: 22px; }
+  .slide-body li { margin: 6px 0; }
+  .slide-body li::marker { color: var(--spring); }
+
+  /* lead slide variant */
+  .slide.lead { background: var(--forest); color: var(--paper); }
+  .slide.lead .slide-header { border-bottom-color: rgba(255,255,255,.08); padding-top: 80px; }
+  .slide.lead .slide-header::before { background: var(--spring); }
+  .slide.lead .slide-title { color: var(--paper); font-size: 52px; }
+  .slide.lead .slide-subtitle { color: rgba(255,255,255,.6); font-size: 22px; margin-top: 14px; }
+  .slide.lead .slide-meta { color: rgba(255,255,255,.45); }
+  .slide.lead .slide-meta .dot { background: rgba(255,255,255,.45); }
+  .slide.lead .slide-body { color: rgba(255,255,255,.85); font-size: 19px; }
+  .slide.lead .slide-body strong { color: var(--spring); }
+  .slide.lead .slide-body em { color: rgba(255,255,255,.95); }
+  .slide.lead .slide-body code { background: rgba(255,255,255,.08); color: var(--spring); }
+  .slide.lead .slide-body a { color: var(--spring); text-decoration: none; border-bottom: 1px dashed rgba(0,237,100,.4); }
+  .slide.lead .slide-body a:hover { border-bottom-color: var(--spring); }
+  .slide.lead .slide-body table th { color: var(--paper); border-bottom-color: var(--spring); background: rgba(255,255,255,.04); }
+  .slide.lead .slide-body table td { border-bottom-color: rgba(255,255,255,.08); }
+  .slide.lead .slide-body table tr:nth-child(even) td { background: rgba(255,255,255,.03); }
+
+  /* ---------- Code blocks ---------- */
+  .slide-body code {
+    font-family: var(--mono);
+    background: var(--fog);
+    color: var(--forest);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: .9em;
+  }
+  .slide-body pre {
+    background: var(--forest);
+    color: #d1fae5;
+    padding: 18px 20px;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.55;
+    border-left: 4px solid var(--spring);
+  }
+  .slide-body pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+  }
+  .tok-kw    { color: #00ed64; font-weight: 600; }
+  .tok-str   { color: #fcd34d; }
+  .tok-num   { color: #fda4af; }
+  .tok-com   { color: #6ee7b7; opacity: .55; font-style: italic; }
+  .tok-fn    { color: #a7f3d0; }
+  .tok-pun   { color: #94a3b8; }
+
+  /* ---------- Tables ---------- */
+  .slide-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 15px;
+  }
+  .slide-body table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 700;
+    color: var(--slate);
+    border-bottom: 2px solid var(--spring);
+    background: var(--fog-2);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .slide-body table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  .slide-body table tr:nth-child(even) td { background: var(--fog-2); }
+
+  /* SQL vs NoSQL coloring */
+  table.compare th.sql, table.compare td.sql { color: var(--sql); }
+  table.compare th.nosql, table.compare td.nosql { color: var(--nosql); }
+  table.compare th.sql, table.compare th.nosql { border-bottom-width: 2px; }
+  table.compare th.sql { border-bottom-color: var(--sql); }
+  table.compare th.nosql { border-bottom-color: var(--nosql); }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--spring);
+    background: #ecfdf5;
+    color: var(--forest);
+    font-weight: 500;
+  }
+  .callout.warning { border-left-color: var(--warning); background: var(--warning-bg); color: #78350f; }
+  .callout.danger  { border-left-color: var(--danger);  background: var(--danger-bg);  color: #7f1d1d; }
+  .callout strong, .callout em, .callout a, .callout code { color: inherit; }
+  /* callouts keep their own color scheme even on lead slides */
+  .slide.lead .slide-body .callout em,
+  .slide.lead .slide-body .callout strong,
+  .slide.lead .slide-body .callout a,
+  .slide.lead .slide-body .callout code { color: inherit; background: transparent; border-bottom: none; }
+  .slide.lead .slide-body .callout strong { font-weight: 700; }
+
+  /* ---------- Two-column layout ---------- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 16px 0;
+  }
+  .col-card {
+    background: var(--fog-2);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    border-top: 3px solid var(--spring);
+  }
+  .col-card.sql { border-top-color: var(--sql); }
+  .col-card.sql h4 { color: var(--sql); }
+  .col-card.nosql { border-top-color: var(--nosql); }
+  .col-card.nosql h4 { color: var(--nosql); }
+  .col-card h4 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--forest);
+  }
+
+  /* ---------- ASCII diagrams ---------- */
+  .ascii {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--fog-2);
+    color: var(--slate);
+    padding: 16px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px dashed #e5e7eb;
+    white-space: pre;
+    margin: 14px 0;
+  }
+
+  /* ---------- Pills / badges ---------- */
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--fog);
+    color: var(--smoke);
+    margin-right: 6px;
+  }
+  .pill.green { background: #ecfdf5; color: var(--nosql); }
+  .pill.blue  { background: #eff6ff; color: var(--sql); }
+  .pill.red   { background: var(--danger-bg); color: var(--danger); }
+
+  /* ---------- Big stat ---------- */
+  .big-stat {
+    font-family: var(--mono);
+    font-size: 60px;
+    font-weight: 800;
+    color: var(--spring);
+    line-height: 1;
+    margin: 18px 0 6px;
+  }
+  .lead .big-stat { color: var(--spring); }
+
+  /* ---------- Progress bar ---------- */
+  .progress {
+    height: 4px;
+    background: var(--fog);
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--spring);
+    width: 0%;
+    transition: width .25s ease;
+  }
+
+  /* ==========================================================
+     Print — each slide its own page (Ctrl+P → "Save as PDF")
+     ========================================================== */
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    body { background: var(--paper); overflow: visible; }
+    .sidebar, .header, .progress, .controls { display: none !important; }
+    .app, .main, .stage { display: block; height: auto; padding: 0; overflow: visible; }
+    .canvas { box-shadow: none; border-radius: 0; max-width: none; aspect-ratio: auto; height: 720px; }
+    .slide { display: flex !important; page-break-after: always; height: 720px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div><span class="leaf"></span><span class="title">MongoDB Mastery</span></div>
+      <div class="sub">one-day · 1pm – 7pm</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"><!-- populated by JS --></nav>
+    <div class="sidebar-foot">
+      <span id="footIdx">01</span>
+      <span id="footTot">/ 00</span>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN
+       ============================================================ -->
+  <main class="main">
+    <header class="header">
+      <div class="crumbs">
+        <strong id="crumbBlock">Title</strong>
+        <span class="sep">/</span>
+        <span id="crumbSlide">Welcome</span>
+      </div>
+      <div class="controls">
+        <button class="btn" onclick="prev()">◀ <span class="kbd">←</span></button>
+        <button class="btn" onclick="next()">▶ <span class="kbd">→</span></button>
+        <button class="btn primary" onclick="document.documentElement.requestFullscreen?.()">Present <span class="kbd">F11</span></button>
+      </div>
+    </header>
+
+    <div class="stage">
+      <div class="canvas" id="canvas">
+
+<!-- ================================================================
+     SLIDES BEGIN
+     Each <section class="slide" data-block="..." data-title="...">
+     gets a numbered index automatically.
+     ================================================================ -->
+
+<!-- 01 -->
+<section class="slide lead" data-block="Title" data-title="Welcome">
+  <div class="slide-header">
+    <div class="slide-meta"><span>01</span><span class="dot"></span><span>Welcome</span></div>
+    <h1 class="slide-title">NoSQL with MongoDB</h1>
+    <div class="slide-subtitle">A practical, one-day class · 1:00 pm – 7:00 pm · break 4–5 pm</div>
+  </div>
+  <div class="slide-body">
+    <p>By the end of today you will be able to:</p>
+    <ul>
+      <li>Explain what NoSQL is and <strong>why</strong> it exists</li>
+      <li>Read and write MongoDB queries fluently</li>
+      <li>Drive MongoDB from Python via Flask</li>
+      <li>Wire it up to a Streamlit web UI</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="slide lead" data-block="Title" data-title="Your instructor">
+  <div class="slide-header">
+    <div class="slide-meta"><span>02</span><span class="dot"></span><span>Your instructor</span></div>
+    <h1 class="slide-title">Linus Nathaniel</h1>
+    <div class="slide-subtitle">Chief Technology Officer · Altair Capital Group · Karachi, Pakistan</div>
+  </div>
+  <div class="slide-body">
+    <p>I'm a data engineer turned tech leader. I've spent the last six years building the kind of <strong>scalable data pipelines, ETL workflows, and analytics platforms</strong> that real companies run on — across AWS, GCP, and Azure.</p>
+    <p>The systems I build move data between exactly the kinds of stores you're learning about in this course — including <strong>MongoDB</strong>, which is in my day-to-day toolkit. Today I'll give you a complete, practical foundation in it.</p>
+    <p><strong>Connect:</strong> <a href="https://www.linkedin.com/in/linus-dominic/" target="_blank" rel="noopener">linkedin.com/in/linus-dominic</a> · linusnathaniel@gmail.com</p>
+    <div class="callout"><strong>Ground rules:</strong> interrupt freely. Stop me when something doesn't click. The goal isn't to finish the slides — it's to make sure <em>you</em> can write these queries by 7pm.</div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="slide" data-block="Title" data-title="My background">
+  <div class="slide-header">
+    <div class="slide-meta"><span>03</span><span class="dot"></span><span>About me</span></div>
+    <h1 class="slide-title">A bit about my background</h1>
+    <div class="slide-subtitle">Why I'm the one teaching this</div>
+  </div>
+  <div class="slide-body">
+    <table style="font-size:14px">
+      <thead><tr><th style="width:130px">Years</th><th style="width:32%">Role &amp; Company</th><th>Highlights</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>2026 – now</strong></td>
+          <td><strong>Chief Technology Officer</strong><br>Altair Capital Group</td>
+          <td>Leads the full technology org — engineering, data, and infrastructure</td>
+        </tr>
+        <tr>
+          <td>2025 – 2026</td>
+          <td><strong>Chief Data Officer</strong><br>Altair Capital Group</td>
+          <td>Built and led the data function org-wide</td>
+        </tr>
+        <tr>
+          <td>Jun – Dec 2025</td>
+          <td><strong>Senior Data Engineer</strong><br>VentureDive</td>
+          <td>Enterprise data platforms for client projects</td>
+        </tr>
+        <tr>
+          <td>2023 – 2025</td>
+          <td><strong>Data Engineer</strong><br>Pure Harvest Smart Farms · Abu Dhabi</td>
+          <td>PySpark + AWS Glue ETL (30% faster) · Medallion Architecture on Redshift</td>
+        </tr>
+        <tr>
+          <td>2022 – 2023</td>
+          <td><strong>Data &amp; ML Engineer</strong><br>Arpatech</td>
+          <td>Smart Mirror IoT facial-recognition · Elasticsearch sales-data app (50% faster)</td>
+        </tr>
+        <tr>
+          <td>2019 – 2021</td>
+          <td><strong>Lead Support Engineer &amp; Data Analyst</strong><br>Bleed AI</td>
+          <td>Computer-vision data pipelines · model refinement</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px; font-size:14px"><strong>BS Computer Science</strong> · KIET &nbsp;·&nbsp; <strong>Certified Data Engineer</strong> &amp; <strong>Certified Data Analyst</strong> · Karachi AI</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="slide" data-block="Title" data-title="Roadmap">
+  <div class="slide-header">
+    <div class="slide-meta"><span>02</span><span class="dot"></span><span>Today's roadmap</span></div>
+    <h1 class="slide-title">Today's roadmap</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Time</th><th>Block</th><th>Focus</th></tr></thead>
+      <tbody>
+        <tr><td>1:00 – 1:20</td><td><strong>0</strong></td><td>Where this fits in your data engineering journey</td></tr>
+        <tr><td>1:20 – 2:00</td><td><strong>A</strong></td><td>NoSQL <strong>theory</strong> &amp; MongoDB mental model</td></tr>
+        <tr><td>2:00 – 2:40</td><td><strong>B</strong></td><td>Setup, <code>find()</code>, projection (Q1–Q3)</td></tr>
+        <tr><td>2:40 – 3:20</td><td><strong>C</strong></td><td>Operators, nested fields, sort (Q4–Q7)</td></tr>
+        <tr><td>3:20 – 4:00</td><td><strong>D</strong></td><td>Regex (Q8–Q10) → bridge to Python</td></tr>
+        <tr><td><strong>4:00 – 5:00</strong></td><td>—</td><td><strong>Break</strong></td></tr>
+        <tr><td>5:00 – 5:30</td><td><strong>E</strong></td><td>PyMongo basics</td></tr>
+        <tr><td>5:30 – 6:15</td><td><strong>F</strong></td><td>Flask CRUD API</td></tr>
+        <tr><td>6:15 – 6:50</td><td><strong>G</strong></td><td>Streamlit frontend (end-to-end)</td></tr>
+        <tr><td>6:50 – 7:00</td><td>—</td><td>Wrap + homework</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>This is your only NoSQL class</strong> — by 7pm you'll have a complete mental model and hands-on experience. Don't worry if it feels like a lot; we'll go step by step.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK 0 — ORIENTATION (for absolute beginners)
+     ============================================================ -->
+
+<!-- 03 -->
+<section class="slide lead" data-block="Block 0 — Orientation" data-title="Block 0 intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>03</span><span class="dot"></span><span>Block 0 · 1:00 – 1:20</span></div>
+    <h1 class="slide-title">Where you are right now</h1>
+    <div class="slide-subtitle">A quick orientation before we dive in</div>
+  </div>
+  <div class="slide-body">
+    <p>You're a <strong>data engineering</strong> student. Today is your <strong>only NoSQL class</strong>.</p>
+    <p>Goals for this 20-minute orientation:</p>
+    <ul>
+      <li>Place NoSQL on the map of things you've already learned</li>
+      <li>Refresh what you know about <strong>SQL</strong> (we'll contrast against it all day)</li>
+      <li>Answer: <em>why does a data engineer even need to know this?</em></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="slide" data-block="Block 0 — Orientation" data-title="The data engineering map">
+  <div class="slide-header">
+    <div class="slide-meta"><span>04</span><span class="dot"></span><span>Where NoSQL fits</span></div>
+    <h1 class="slide-title">The data engineering map</h1>
+  </div>
+  <div class="slide-body">
+    <p>A data engineer's job is to <strong>move and shape data</strong> so it's useful for analysts, scientists, and applications. That involves a stack of tools:</p>
+    <div class="ascii">  SOURCES        →   INGEST          →   STORAGE              →   SERVE
+  ───────            ───────              ───────                  ─────
+  • Apps             • Kafka              • Data lake (S3)         • Dashboards
+  • Sensors          • Airflow            • Warehouse (BigQuery)   • APIs
+  • Web events       • ETL scripts        • OLTP DB (Postgres)     • ML models
+  • Files                                 • NoSQL DB (MongoDB) ◀── you are here</div>
+    <div class="callout"><strong>NoSQL databases sit in the storage and serving layers.</strong> They're chosen when the shape of the data, the scale, or the access pattern doesn't fit a relational warehouse.</div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="slide" data-block="Block 0 — Orientation" data-title="SQL refresher">
+  <div class="slide-header">
+    <div class="slide-meta"><span>05</span><span class="dot"></span><span>Building on what you know</span></div>
+    <h1 class="slide-title">Quick SQL refresher</h1>
+  </div>
+  <div class="slide-body">
+    <p>You already know that in SQL, data lives in <strong>tables</strong> with <strong>rows</strong> and <strong>columns</strong>:</p>
+<pre><code><span class="tok-kw">CREATE TABLE</span> users (
+  id        <span class="tok-kw">INT PRIMARY KEY</span>,
+  name      <span class="tok-kw">TEXT</span>,
+  email     <span class="tok-kw">TEXT</span>
+);
+
+<span class="tok-kw">SELECT</span> name, email <span class="tok-kw">FROM</span> users <span class="tok-kw">WHERE</span> id = <span class="tok-num">42</span>;
+</code></pre>
+    <p>Today, every SQL idea has a MongoDB equivalent — usually a <em>looser</em> one. We'll show the mapping every step of the way.</p>
+    <div class="callout"><strong>If you're rusty on SQL:</strong> just remember tables = grids of rows. That's enough to follow today.</div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="slide" data-block="Block 0 — Orientation" data-title="What is a database?">
+  <div class="slide-header">
+    <div class="slide-meta"><span>06</span><span class="dot"></span><span>First principles</span></div>
+    <h1 class="slide-title">What is a database, really?</h1>
+  </div>
+  <div class="slide-body">
+    <p>Strip everything away — a database is just <strong>three things</strong>:</p>
+    <ol>
+      <li>A place to <strong>put</strong> data so it survives a restart</li>
+      <li>A way to <strong>find</strong> what you put there, fast</li>
+      <li>Some <strong>guarantees</strong> about what happens when many people read &amp; write at once</li>
+    </ol>
+    <p>Different databases make different trade-offs on those three things:</p>
+    <table>
+      <thead><tr><th>Database</th><th>Optimised for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SQL</strong> (Postgres, MySQL)</td><td>Strict structure, strong guarantees, complex queries</td></tr>
+        <tr><td><strong>NoSQL</strong> (MongoDB, Redis…)</td><td>Flexibility, scale, speed — accept some trade-offs to get them</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>"NoSQL" is not a single thing.</strong> It's a label for "the family of databases that aren't strict tables." We'll meet four kinds today.</div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="slide" data-block="Block 0 — Orientation" data-title="Why a data engineer cares">
+  <div class="slide-header">
+    <div class="slide-meta"><span>07</span><span class="dot"></span><span>The "so what?"</span></div>
+    <h1 class="slide-title">Why a data engineer needs to know NoSQL</h1>
+  </div>
+  <div class="slide-body">
+    <p>You will run into NoSQL databases <strong>constantly</strong> in real data engineering work:</p>
+    <ul>
+      <li><strong>Source systems</strong> — modern apps store user data in MongoDB / DynamoDB; you'll be the one extracting it</li>
+      <li><strong>Event ingestion</strong> — clickstreams and IoT data land in document stores before being processed</li>
+      <li><strong>Caching layers</strong> — Redis sits in front of almost every web service you'll ever touch</li>
+      <li><strong>Serving layer</strong> — when analysts need sub-100ms lookups, the warehouse is too slow; NoSQL is the answer</li>
+    </ul>
+    <div class="callout"><strong>Modern data systems are "polyglot"</strong> — they use multiple databases together. A data engineer who only knows SQL is missing half the toolbox.</div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="slide" data-block="Block 0 — Orientation" data-title="Vocabulary heads-up">
+  <div class="slide-header">
+    <div class="slide-meta"><span>08</span><span class="dot"></span><span>Vocabulary heads-up</span></div>
+    <h1 class="slide-title">Words you'll hear today (don't panic)</h1>
+  </div>
+  <div class="slide-body">
+    <p>I'll define each of these properly when we hit it. Skim now so they don't feel scary later:</p>
+    <table>
+      <thead><tr><th>Term</th><th>One-line meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Document</strong></td><td>Like a JSON object — what MongoDB stores instead of "rows"</td></tr>
+        <tr><td><strong>Collection</strong></td><td>A bag of documents — MongoDB's version of a "table"</td></tr>
+        <tr><td><strong>Schema</strong></td><td>The shape/structure your data is required to follow</td></tr>
+        <tr><td><strong>ACID</strong></td><td>The classic SQL safety guarantees (we'll spell it out)</td></tr>
+        <tr><td><strong>CAP theorem</strong></td><td>A famous "pick two of three" rule for distributed databases</td></tr>
+        <tr><td><strong>Sharding</strong></td><td>Splitting one big database across many machines</td></tr>
+        <tr><td><strong>Replication</strong></td><td>Keeping copies of the data on multiple machines for safety</td></tr>
+        <tr><td><strong>CRUD</strong></td><td>Create, Read, Update, Delete — the four basic operations</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK A — FOUNDATIONS
+     ============================================================ -->
+
+<!-- 09 -->
+<section class="slide lead" data-block="Block A — Foundations" data-title="Block A intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>03</span><span class="dot"></span><span>Block A · 1:20 – 2:00</span></div>
+    <h1 class="slide-title">NoSQL Foundations</h1>
+    <div class="slide-subtitle">Why it exists · what the trade-offs are · where MongoDB fits</div>
+  </div>
+  <div class="slide-body">
+    <p><em>By the end of Block A you should be able to answer:</em></p>
+    <ol>
+      <li><strong>Why</strong> does NoSQL exist?</li>
+      <li><strong>What</strong> are the trade-offs?</li>
+      <li><strong>Where</strong> does MongoDB sit in the landscape?</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="slide" data-block="Block A — Foundations" data-title="A scenario from 2006">
+  <div class="slide-header">
+    <div class="slide-meta"><span>04</span><span class="dot"></span><span>Why NoSQL exists</span></div>
+    <h1 class="slide-title">A scenario from 2006</h1>
+  </div>
+  <div class="slide-body">
+    <p>You're an engineer at a <strong>brand-new social media company</strong>.</p>
+    <p>Users post photos, tag friends, comment, like, share. All this data lives in <strong>one big SQL database</strong> (think MySQL or PostgreSQL — the kind you've already met).</p>
+    <ul>
+      <li><strong>Month 1:</strong> 100,000 users → one server, no problem.</li>
+      <li><strong>Month 6:</strong> 50 million users → server is on fire. 🔥</li>
+    </ul>
+    <div class="callout"><strong>What do you do?</strong> The next slide shows what people actually tried — and why each option hurt.</div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="slide" data-block="Block A — Foundations" data-title="What people tried">
+  <div class="slide-header">
+    <div class="slide-meta"><span>05</span><span class="dot"></span><span>Why NoSQL exists</span></div>
+    <h1 class="slide-title">What people actually tried</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Strategy</th><th>What it means</th><th>What breaks</th></tr></thead>
+      <tbody>
+        <tr><td>Buy a bigger box</td><td>"Vertical scaling" — beefier CPU, more RAM</td><td>Hits a hardware ceiling, costs explode</td></tr>
+        <tr><td>Add <strong>read replicas</strong></td><td>Copy the DB to extra machines for reads</td><td>Reads OK, but all writes still hit one machine</td></tr>
+        <tr><td><strong>Manual sharding</strong></td><td>Split data across N servers (e.g. by user-id)</td><td>App has to track which server holds what; joins across servers stop working</td></tr>
+        <tr><td><strong>Denormalize</strong></td><td>Pre-join data into wide tables to avoid JOINs</td><td>Schema balloons; updates become multi-day events</td></tr>
+      </tbody>
+    </table>
+    <p>Every workaround <strong>chips away at something SQL was designed to give you</strong> — strict structure, joins, transactional safety.</p>
+    <div class="callout"><strong>That's the crack NoSQL grew out of.</strong> A new generation of databases said: "what if we drop some of those guarantees on purpose, to get scale and flexibility back?"</div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Real timeline">
+  <div class="slide-header">
+    <div class="slide-meta"><span>06</span><span class="dot"></span><span>Why NoSQL exists</span></div>
+    <h1 class="slide-title">A real timeline</h1>
+  </div>
+  <div class="slide-body">
+    <ul>
+      <li><span class="pill">2006</span> Google publishes the <strong>BigTable</strong> paper</li>
+      <li><span class="pill">2007</span> Amazon publishes the <strong>Dynamo</strong> paper</li>
+      <li><span class="pill">2008</span> <strong>Cassandra</strong> released by Facebook</li>
+      <li><span class="pill">2009</span> <strong>MongoDB</strong> 1.0 · <strong>Redis</strong> 1.0</li>
+      <li><span class="pill">2009</span> Term <em>"NoSQL"</em> coined at a meetup in San Francisco</li>
+    </ul>
+    <div class="callout"><strong>NoSQL = "Not Only SQL"</strong> — <em>not</em> "No SQL". The movement isn't anti-relational. It's: there are workloads SQL doesn't fit. Modern practice = <strong>polyglot persistence</strong>.</div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Four axes">
+  <div class="slide-header">
+    <div class="slide-meta"><span>07</span><span class="dot"></span><span>SQL vs NoSQL</span></div>
+    <h1 class="slide-title">SQL vs NoSQL — the four axes</h1>
+  </div>
+  <div class="slide-body">
+    <table class="compare">
+      <thead><tr><th>Axis</th><th class="sql">SQL</th><th class="nosql">NoSQL</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Schema</strong></td><td class="sql">On-write (rigid, enforced)</td><td class="nosql">On-read (flexible)</td></tr>
+        <tr><td><strong>Scaling</strong></td><td class="sql">Vertical (bigger box)</td><td class="nosql">Horizontal (more boxes)</td></tr>
+        <tr><td><strong>Data shape</strong></td><td class="sql">Rows in tables, joined via FKs</td><td class="nosql">Document / key-value / column / graph</td></tr>
+        <tr><td><strong>Consistency</strong></td><td class="sql">Strong (ACID) by default</td><td class="nosql">Tunable, often eventual</td></tr>
+      </tbody>
+    </table>
+    <p>We'll unpack each row.</p>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Axis 1: Schema">
+  <div class="slide-header">
+    <div class="slide-meta"><span>08</span><span class="dot"></span><span>Axis 1 of 4</span></div>
+    <h1 class="slide-title">Axis 1: Schema</h1>
+  </div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-card sql">
+        <h4>SQL</h4>
+<pre><code><span class="tok-kw">CREATE TABLE</span> users (id <span class="tok-kw">INT</span>, email <span class="tok-kw">VARCHAR</span>(255) <span class="tok-kw">NOT NULL</span>);
+<span class="tok-kw">ALTER TABLE</span> users <span class="tok-kw">ADD COLUMN</span> tags <span class="tok-kw">VARCHAR</span>(255);
+<span class="tok-com">-- can lock 500M rows</span></code></pre>
+        <p>The DB <strong>refuses</strong> anything that doesn't match.</p>
+      </div>
+      <div class="col-card nosql">
+        <h4>MongoDB</h4>
+<pre><code>db.users.<span class="tok-fn">insertOne</span>({ name: <span class="tok-str">"Ada"</span> });
+db.users.<span class="tok-fn">insertOne</span>({
+  name: <span class="tok-str">"Grace"</span>,
+  email: <span class="tok-str">"g@x.com"</span>,
+  tags: [<span class="tok-str">"admin"</span>]
+});</code></pre>
+        <p>Both docs in the same collection. <strong>No migration.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Schema trade-off">
+  <div class="slide-header">
+    <div class="slide-meta"><span>09</span><span class="dot"></span><span>Axis 1 of 4</span></div>
+    <h1 class="slide-title">Schema: the double-edged sword</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Upside</th><th>Downside</th></tr></thead>
+      <tbody>
+        <tr><td>Evolve without downtime</td><td>"Schema-less" can become "schema-everywhere-in-the-code"</td></tr>
+        <tr><td>Prototype fast</td><td>Without discipline → 14 shapes for one thing</td></tr>
+        <tr><td>Heterogeneous data is fine</td><td>Application is responsible for sense-making</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>MongoDB's middle ground:</strong> schema validation rules (collection-level JSON schema). You opt-in to enforcement when you want it.</div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Axis 2: Scaling">
+  <div class="slide-header">
+    <div class="slide-meta"><span>10</span><span class="dot"></span><span>Axis 2 of 4</span></div>
+    <h1 class="slide-title">Axis 2: Scaling</h1>
+  </div>
+  <div class="slide-body">
+    <p><strong>Vertical</strong> = bigger machine. <strong>Horizontal</strong> = more machines.</p>
+    <p><strong>Why is going horizontal hard for SQL?</strong></p>
+    <p>SQL promises that a transaction is <em>all-or-nothing</em>. If your data is spread across 8 machines, every multi-row transaction now has to coordinate across all of them and agree to commit or roll back together. That coordination is <strong>slow and easy to break</strong> when networks hiccup.</p>
+    <div class="callout"><strong>NoSQL relaxes some of those guarantees on purpose</strong> so it <em>can</em> spread across many machines without that coordination cost.</div>
+    <p>Same MongoDB API runs on:</p>
+    <ul>
+      <li>Your laptop (one node)</li>
+      <li>A 1,000-node cluster across multiple data centres</li>
+    </ul>
+    <div class="callout"><strong>Data engineer's lens:</strong> when you see "petabyte-scale" or "millions of writes per second" in a job description, this is the property that makes it possible.</div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Impedance mismatch">
+  <div class="slide-header">
+    <div class="slide-meta"><span>11</span><span class="dot"></span><span>Axis 3 of 4</span></div>
+    <h1 class="slide-title">Axis 3: Data shape — impedance mismatch</h1>
+  </div>
+  <div class="slide-body">
+    <p>The application has:</p>
+<pre><code>user = {
+  <span class="tok-str">"name"</span>: <span class="tok-str">"Ada"</span>,
+  <span class="tok-str">"tags"</span>: [<span class="tok-str">"admin"</span>, <span class="tok-str">"beta"</span>],
+  <span class="tok-str">"address"</span>: { <span class="tok-str">"city"</span>: <span class="tok-str">"London"</span> }
+}</code></pre>
+    <table class="compare">
+      <thead><tr><th>Storage</th><th>What it looks like</th></tr></thead>
+      <tbody>
+        <tr><td class="sql"><strong>SQL</strong></td><td>3 tables (users, user_tags, addresses) joined via FKs</td></tr>
+        <tr><td class="nosql"><strong>MongoDB</strong></td><td>Literally that exact object, one document</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>In plain English:</strong> SQL forces you to break your nice nested object into flat tables, then JOIN them back together every time you read. MongoDB just stores the object as-is. <em>(That's why an entire category of tools called "ORMs" — Object-Relational Mappers, like SQLAlchemy in Python — exists: to translate between objects and tables. With a document DB, you don't need that translation layer.)</em></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Axis 4: Consistency">
+  <div class="slide-header">
+    <div class="slide-meta"><span>12</span><span class="dot"></span><span>Axis 4 of 4</span></div>
+    <h1 class="slide-title">Axis 4: Consistency — preview</h1>
+  </div>
+  <div class="slide-body">
+    <p>We'll do this properly in the next slides (CAP theorem). For now: <strong>MongoDB lets you tune consistency per query.</strong></p>
+    <ul>
+      <li>Want strong reads? Read from <strong>primary</strong>.</li>
+      <li>Want fast reads, OK with stale data? Read from <strong>secondary</strong>.</li>
+      <li>Want durable writes? <code>w: "majority"</code>.</li>
+      <li>Want fastest writes? <code>w: 1</code>.</li>
+    </ul>
+    <div class="callout">This dial doesn't exist in classical SQL.</div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide lead" data-block="Block A — Foundations" data-title="CAP intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>13</span><span class="dot"></span><span>Distributed systems</span></div>
+    <h1 class="slide-title">The CAP Theorem</h1>
+    <div class="slide-subtitle"><em>The most important idea in distributed databases</em></div>
+  </div>
+  <div class="slide-body">
+    <p>Brewer (2000) · Proven by Gilbert &amp; Lynch (2002)</p>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-block="Block A — Foundations" data-title="CAP — statement">
+  <div class="slide-header">
+    <div class="slide-meta"><span>14</span><span class="dot"></span><span>CAP theorem</span></div>
+    <h1 class="slide-title">CAP — the statement</h1>
+  </div>
+  <div class="slide-body">
+    <p>"Distributed" just means <strong>the database runs on more than one machine</strong>. CAP says such a system can guarantee <strong>at most two</strong> of these three things:</p>
+    <ul>
+      <li><strong>C — Consistency</strong> — everyone always sees the latest data</li>
+      <li><strong>A — Availability</strong> — the database always answers (never down)</li>
+      <li><strong>P — Partition tolerance</strong> — it keeps working even if some machines can't talk to each other</li>
+    </ul>
+    <div class="callout"><strong>In plain English:</strong> when you have many machines holding copies of the same data, and the network breaks between them, you must choose: stop answering until you can sync up (consistency), or keep answering with possibly-stale data (availability).</div>
+    <div class="ascii">     C
+    /  \
+   /    \
+  / CP   \
+ /________\
+A          P
+ \  AP   /
+  \     /
+   \___/
+       Pick any two (in theory)</div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" data-block="Block A — Foundations" data-title="CAP — catch">
+  <div class="slide-header">
+    <div class="slide-meta"><span>15</span><span class="dot"></span><span>CAP theorem</span></div>
+    <h1 class="slide-title">CAP — the catch</h1>
+  </div>
+  <div class="slide-body">
+    <p><strong>Network partitions WILL happen.</strong> Cables get cut. Switches fail. Cloud zones go dark.</p>
+    <div class="callout warning"><strong>P is not optional.</strong></div>
+    <p>The real choice is: <strong>C vs A, <em>during a partition</em>.</strong></p>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-block="Block A — Foundations" data-title="CP vs AP">
+  <div class="slide-header">
+    <div class="slide-meta"><span>16</span><span class="dot"></span><span>CAP theorem</span></div>
+    <h1 class="slide-title">CP vs AP</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th></th><th>Choose <strong>C</strong> (CP)</th><th>Choose <strong>A</strong> (AP)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Behaviour during partition</strong></td><td>Minority side stops serving</td><td>All nodes keep serving</td></tr>
+        <tr><td><strong>Risk</strong></td><td>Unavailability</td><td>Stale / divergent data</td></tr>
+        <tr><td><strong>Examples</strong></td><td><strong>MongoDB</strong>, HBase, Zookeeper, etcd, Redis (cluster)</td><td><strong>Cassandra</strong>, DynamoDB, CouchDB, Riak</td></tr>
+      </tbody>
+    </table>
+    <p>Neither is "right" — depends on whether <strong>stale reads are worse than unavailability</strong> for your use case.</p>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide" data-block="Block A — Foundations" data-title="CP vs AP — example">
+  <div class="slide-header">
+    <div class="slide-meta"><span>17</span><span class="dot"></span><span>CAP theorem</span></div>
+    <h1 class="slide-title">CP vs AP — concrete example</h1>
+  </div>
+  <div class="slide-body">
+    <div class="callout">Replica set across two data centres. The link between them is cut. A customer in <strong>DC-A</strong> updates their shipping address. A customer in <strong>DC-B</strong> tries to read it.</div>
+    <table>
+      <thead><tr><th>System</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CP (MongoDB)</strong></td><td>DC-B returns error / "temporarily unavailable"</td></tr>
+        <tr><td><strong>AP (Cassandra)</strong></td><td>DC-B returns the <strong>old</strong> address — package ships to wrong place</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Correctness vs availability.</strong> Pick your poison based on the workload.</p>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide" data-block="Block A — Foundations" data-title="PACELC">
+  <div class="slide-header">
+    <div class="slide-meta"><span>18</span><span class="dot"></span><span>Beyond CAP</span></div>
+    <h1 class="slide-title">PACELC — the extension</h1>
+  </div>
+  <div class="slide-body">
+    <p>CAP only talks about partitions, which are <strong>rare</strong>. What about normal operation?</p>
+    <div class="callout"><strong>PACELC</strong> (Daniel Abadi):<br>
+      <em>if <strong>P</strong>artition → <strong>A</strong> or <strong>C</strong></em><br>
+      <em>else → <strong>L</strong>atency or <strong>C</strong>onsistency</em>
+    </div>
+    <p>In MongoDB under normal ops:</p>
+    <ul>
+      <li><strong>Read preference</strong> → primary (slow, fresh) vs secondary (fast, possibly stale)</li>
+      <li><strong>Write concern</strong> → <code>w: 1</code> (fast) vs <code>w: "majority"</code> (durable)</li>
+    </ul>
+    <p>You're tuning the L-vs-C dial every time you query.</p>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide" data-block="Block A — Foundations" data-title="ACID">
+  <div class="slide-header">
+    <div class="slide-meta"><span>19</span><span class="dot"></span><span>Consistency models</span></div>
+    <h1 class="slide-title">ACID — what SQL gives you</h1>
+  </div>
+  <div class="slide-body">
+    <p>ACID is the <strong>safety promise SQL databases make about transactions</strong>. (A "transaction" = a group of operations that should succeed or fail as one unit — like moving money between accounts.)</p>
+    <ul>
+      <li><strong>A</strong>tomicity — <em>all-or-nothing.</em> Either every step succeeds, or none do.</li>
+      <li><strong>C</strong>onsistency — the database moves from one valid state to another (rules like "no negative balances" hold)</li>
+      <li><strong>I</strong>solation — two transactions running at the same time don't see each other's half-finished work</li>
+      <li><strong>D</strong>urability — once it says "done", it survives a crash, power cut, anything</li>
+    </ul>
+    <div class="callout"><strong>The classic example:</strong> moving $100 from account A to account B. ACID guarantees you can never lose the money or duplicate it, even if the server crashes mid-transfer.</div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide" data-block="Block A — Foundations" data-title="BASE">
+  <div class="slide-header">
+    <div class="slide-meta"><span>20</span><span class="dot"></span><span>Consistency models</span></div>
+    <h1 class="slide-title">BASE — the original NoSQL pitch</h1>
+  </div>
+  <div class="slide-body">
+    <p>Early NoSQL systems traded ACID for a more relaxed model called <strong>BASE</strong>:</p>
+    <ul>
+      <li><strong>B</strong>asically <strong>A</strong>vailable — the database always answers, even if it's degraded</li>
+      <li><strong>S</strong>oft state — the data may change over time even without new writes (because replicas are catching up)</li>
+      <li><strong>E</strong>ventually consistent — if you stop writing, all copies will agree… <em>eventually</em> (milliseconds usually)</li>
+    </ul>
+    <div class="callout"><strong>Real-world example:</strong> when you "like" a post on Instagram, the count might be slightly different on two phones for a second. That's eventual consistency in action — the system chose speed over instant agreement.</div>
+  </div>
+</section>
+
+<!-- 21 -->
+<section class="slide" data-block="Block A — Foundations" data-title="MongoDB position">
+  <div class="slide-header">
+    <div class="slide-meta"><span>21</span><span class="dot"></span><span>Consistency models</span></div>
+    <h1 class="slide-title">Where MongoDB <em>actually</em> sits</h1>
+  </div>
+  <div class="slide-body">
+    <ul>
+      <li><strong>Single-document writes have always been atomic.</strong> A document is the unit of atomicity.</li>
+      <li><strong>MongoDB 4.0 (2018)</strong> — multi-document ACID transactions across a replica set</li>
+      <li><strong>MongoDB 4.2</strong> — multi-document ACID across a sharded cluster</li>
+    </ul>
+    <div class="callout"><strong>MongoDB is not a "BASE database" anymore.</strong> It's a CP system with ACID at the document level and optional ACID across documents.</div>
+  </div>
+</section>
+
+<!-- 22 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Modeling rule">
+  <div class="slide-header">
+    <div class="slide-meta"><span>22</span><span class="dot"></span><span>Modeling principle</span></div>
+    <h1 class="slide-title">The modeling rule that follows</h1>
+  </div>
+  <div class="slide-body">
+    <div class="big-stat" style="color: var(--forest);">"Embed what you read together."</div>
+    <p>Because single-doc writes are atomic, the <strong>art</strong> of MongoDB modeling is shaping documents so that <em>things you update together live in the same document.</em></p>
+    <p>Do that, and you rarely need transactions.</p>
+  </div>
+</section>
+
+<!-- 23 -->
+<section class="slide lead" data-block="Block A — Foundations" data-title="Four families intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>23</span><span class="dot"></span><span>Landscape</span></div>
+    <h1 class="slide-title">The four NoSQL families</h1>
+    <div class="slide-subtitle">One slide each · one concrete product · one sweet-spot use case</div>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 24 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Document stores">
+  <div class="slide-header">
+    <div class="slide-meta"><span>24</span><span class="dot"></span><span>Family 1 of 4</span></div>
+    <h1 class="slide-title">1. Document stores</h1>
+  </div>
+  <div class="slide-body">
+    <p><span class="pill green">Examples</span> MongoDB, CouchDB</p>
+    <p><strong>Shape:</strong> self-describing JSON-like documents in collections.</p>
+    <p><strong>Query:</strong> rich — filter by any field, including nested + array fields.</p>
+    <p><strong>Sweet spot:</strong> user profiles, product catalogs, CMS, content — anything where the <em>aggregate</em> ("everything I need to render this page") is the natural unit.</p>
+    <div class="callout"><strong>This is us today.</strong></div>
+  </div>
+</section>
+
+<!-- 25 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Key-value stores">
+  <div class="slide-header">
+    <div class="slide-meta"><span>25</span><span class="dot"></span><span>Family 2 of 4</span></div>
+    <h1 class="slide-title">2. Key-value stores</h1>
+  </div>
+  <div class="slide-body">
+    <p><span class="pill green">Examples</span> Redis, Memcached, DynamoDB</p>
+    <p><strong>Shape:</strong> opaque value addressed by a single key.</p>
+    <p><strong>Query:</strong> by key only. <strong>O(1).</strong></p>
+    <p><strong>Sweet spot:</strong> caches, session storage, rate limiters, leaderboards, pub/sub. <em>"I know the key — give me the value RIGHT NOW."</em></p>
+    <div class="callout"><strong>Mental model:</strong> a giant Python <code>dict</code> that survives restarts.</div>
+  </div>
+</section>
+
+<!-- 26 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Wide-column stores">
+  <div class="slide-header">
+    <div class="slide-meta"><span>26</span><span class="dot"></span><span>Family 3 of 4</span></div>
+    <h1 class="slide-title">3. Wide-column stores</h1>
+  </div>
+  <div class="slide-body">
+    <p><span class="pill green">Examples</span> Cassandra, HBase, Google BigTable</p>
+    <p><strong>Shape:</strong> rows identified by a row key; each row has flexible columns grouped into column families.</p>
+    <p><strong>Query:</strong> by row key + column ranges. <em>Bad</em> at arbitrary filtering.</p>
+    <p><strong>Sweet spot:</strong> massive time-series (IoT, log events), write-heavy workloads, when you know your access pattern in advance.</p>
+    <div class="callout"><strong>Mental model:</strong> a spreadsheet where every row has different columns and there are 10 billion rows.</div>
+  </div>
+</section>
+
+<!-- 27 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Graph databases">
+  <div class="slide-header">
+    <div class="slide-meta"><span>27</span><span class="dot"></span><span>Family 4 of 4</span></div>
+    <h1 class="slide-title">4. Graph databases</h1>
+  </div>
+  <div class="slide-body">
+    <p><span class="pill green">Examples</span> Neo4j, Amazon Neptune, ArangoDB</p>
+    <p><strong>Shape:</strong> <strong>nodes</strong> (entities) + <strong>edges</strong> (relationships), both with properties.</p>
+    <p><strong>Query:</strong> traversal languages — Cypher, Gremlin. <em>"Friends of friends who like jazz and live in Lagos."</em></p>
+    <p><strong>Sweet spot:</strong> social networks, fraud detection, recommendations, knowledge graphs.</p>
+    <div class="callout"><strong>Mental model:</strong> if your whiteboard diagram has lots of arrows, you want this.</div>
+  </div>
+</section>
+
+<!-- 28 -->
+<section class="slide" data-block="Block A — Foundations" data-title="None replaces SQL">
+  <div class="slide-header">
+    <div class="slide-meta"><span>28</span><span class="dot"></span><span>Polyglot persistence</span></div>
+    <h1 class="slide-title">None of these replaces SQL</h1>
+  </div>
+  <div class="slide-body">
+    <ul>
+      <li>A bank's core ledger → still <strong>PostgreSQL / Oracle</strong> (you need ACID for money)</li>
+      <li>Netflix's viewing history → <strong>Cassandra</strong> (massive write volume)</li>
+      <li>Your user profile service → <strong>MongoDB</strong> (flexible shape per user)</li>
+      <li>Their session cache → <strong>Redis</strong> (sub-millisecond lookups)</li>
+      <li>Airbnb uses <strong>all of these together</strong> — that's <em>polyglot persistence</em>.</li>
+    </ul>
+    <div class="callout"><strong>Use the right store for the right job.</strong></div>
+    <div class="callout"><strong>Data engineer's takeaway:</strong> in a real job you won't pick "SQL or NoSQL" — you'll move data <em>between</em> them. Knowing what each is good at is how you design the pipeline.</div>
+  </div>
+</section>
+
+<!-- 29 -->
+<section class="slide lead" data-block="Block A — Foundations" data-title="Mental model intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>29</span><span class="dot"></span><span>Zoom in</span></div>
+    <h1 class="slide-title">MongoDB — the mental model</h1>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 30 -->
+<section class="slide" data-block="Block A — Foundations" data-title="SQL ↔ MongoDB">
+  <div class="slide-header">
+    <div class="slide-meta"><span>30</span><span class="dot"></span><span>Mental model</span></div>
+    <h1 class="slide-title">SQL ↔ MongoDB hierarchy</h1>
+  </div>
+  <div class="slide-body">
+    <table class="compare">
+      <thead><tr><th class="sql">SQL</th><th class="nosql">MongoDB</th></tr></thead>
+      <tbody>
+        <tr><td class="sql">Server</td><td class="nosql">Server (<code>mongod</code> process)</td></tr>
+        <tr><td class="sql">Database</td><td class="nosql">Database</td></tr>
+        <tr><td class="sql">Schema (Postgres)</td><td class="nosql">— <em>(no equivalent)</em></td></tr>
+        <tr><td class="sql">Table</td><td class="nosql"><strong>Collection</strong></td></tr>
+        <tr><td class="sql">Row</td><td class="nosql"><strong>Document</strong></td></tr>
+        <tr><td class="sql">Column</td><td class="nosql">Field</td></tr>
+        <tr><td class="sql">Foreign key</td><td class="nosql">Reference <em>or</em> embedded document</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 31 -->
+<section class="slide" data-block="Block A — Foundations" data-title="BSON">
+  <div class="slide-header">
+    <div class="slide-meta"><span>31</span><span class="dot"></span><span>Mental model</span></div>
+    <h1 class="slide-title">BSON — Binary JSON</h1>
+  </div>
+  <div class="slide-body">
+    <p>Documents on disk and on the wire are <strong>BSON</strong>, not JSON.</p>
+    <p><strong>Adds types JSON doesn't have:</strong></p>
+    <ul>
+      <li><code>ObjectId</code></li>
+      <li><code>Date</code> (<code>ISODate</code>)</li>
+      <li><code>NumberLong</code>, <code>NumberDecimal</code></li>
+      <li>Binary, Regex</li>
+    </ul>
+    <p><strong>Other useful properties:</strong> length-encoded → fast random field access without parsing the whole doc · field order preserved.</p>
+    <div class="callout warning">Numbers aren't "just numbers." <code>{count: 1}</code> might be <code>Int32</code>, <code>Int64</code>, or <code>Double</code>.</div>
+  </div>
+</section>
+
+<!-- 32 -->
+<section class="slide" data-block="Block A — Foundations" data-title="ObjectId">
+  <div class="slide-header">
+    <div class="slide-meta"><span>32</span><span class="dot"></span><span>Mental model</span></div>
+    <h1 class="slide-title">The <code>ObjectId</code> — 12 bytes</h1>
+  </div>
+  <div class="slide-body">
+    <div class="ascii">| 4 bytes: timestamp | 5 bytes: random | 3 bytes: counter |</div>
+    <p><strong>Properties:</strong></p>
+    <ul>
+      <li><strong>Globally unique</strong> without coordination (no auto-increment bottleneck)</li>
+      <li><strong>Roughly time-ordered</strong> → newer IDs sort later (great for pagination)</li>
+      <li>Extract creation time:
+<pre><code><span class="tok-fn">ObjectId</span>(<span class="tok-str">"507f1f77bcf86cd799439011"</span>).<span class="tok-fn">getTimestamp</span>()
+<span class="tok-com">// ISODate("2012-10-17T20:46:22Z")</span></code></pre>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- 33 -->
+<section class="slide" data-block="Block A — Foundations" data-title="16 MB limit">
+  <div class="slide-header">
+    <div class="slide-meta"><span>33</span><span class="dot"></span><span>Mental model</span></div>
+    <h1 class="slide-title">The 16 MB document limit</h1>
+  </div>
+  <div class="slide-body">
+    <div class="big-stat" style="color: var(--forest);">16 MB</div>
+    <p><strong>Every document is hard-capped at 16 MB.</strong></p>
+    <p>If you find yourself designing a doc that grows unboundedly:</p>
+    <ul>
+      <li>All comments embedded in the post doc</li>
+      <li>All GPS pings embedded in the trip doc</li>
+    </ul>
+    <p>…<strong>you have a modeling problem.</strong></p>
+    <div class="callout">The fix: keep the unbounded thing in its own collection and reference it.</div>
+  </div>
+</section>
+
+<!-- 34 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Working document">
+  <div class="slide-header">
+    <div class="slide-meta"><span>34</span><span class="dot"></span><span>Today's dataset</span></div>
+    <h1 class="slide-title">Today's working document</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>{
+  <span class="tok-str">"_id"</span>: <span class="tok-fn">ObjectId</span>(<span class="tok-str">"..."</span>),
+  <span class="tok-str">"restaurant_id"</span>: <span class="tok-str">"40356018"</span>,
+  <span class="tok-str">"name"</span>: <span class="tok-str">"Wilken'S Fine Food"</span>,
+  <span class="tok-str">"borough"</span>: <span class="tok-str">"Brooklyn"</span>,
+  <span class="tok-str">"cuisine"</span>: <span class="tok-str">"Delicatessen"</span>,
+  <span class="tok-str">"address"</span>: {
+    <span class="tok-str">"street"</span>: <span class="tok-str">"..."</span>,
+    <span class="tok-str">"zipcode"</span>: <span class="tok-str">"..."</span>,
+    <span class="tok-str">"coord"</span>: [<span class="tok-num">-73.957</span>, <span class="tok-num">40.603</span>]
+  },
+  <span class="tok-str">"grades"</span>: [
+    { <span class="tok-str">"date"</span>: <span class="tok-fn">ISODate</span>(<span class="tok-str">"..."</span>), <span class="tok-str">"grade"</span>: <span class="tok-str">"A"</span>, <span class="tok-str">"score"</span>: <span class="tok-num">10</span> },
+    { <span class="tok-str">"date"</span>: <span class="tok-fn">ISODate</span>(<span class="tok-str">"..."</span>), <span class="tok-str">"grade"</span>: <span class="tok-str">"B"</span>, <span class="tok-str">"score"</span>: <span class="tok-num">14</span> }
+  ]
+}</code></pre>
+  </div>
+</section>
+
+<!-- 35 -->
+<section class="slide" data-block="Block A — Foundations" data-title="Two gotchas">
+  <div class="slide-header">
+    <div class="slide-meta"><span>35</span><span class="dot"></span><span>Pre-load these</span></div>
+    <h1 class="slide-title">Two gotchas to memorise <em>now</em></h1>
+  </div>
+  <div class="slide-body">
+    <div class="callout danger"><strong>1. <code>address.coord</code> = <code>[longitude, latitude]</code></strong><br>
+    <strong>Lng first.</strong> GeoJSON convention. Everyone <em>says</em> "lat/lng"; computers <em>store</em> "lng/lat." This disagreement eats hours.</div>
+    <div class="callout danger"><strong>2. <code>grades</code> is an array of sub-documents</strong><br>
+    When we query <code>"grades.score": {$gt: 70}</code>, MongoDB matches if <strong>any element</strong> of the array satisfies the condition.</div>
+    <p>Internalise these two. They explain half of today's "weird" results.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK B
+     ============================================================ -->
+
+<!-- 36 -->
+<section class="slide lead" data-block="Block B — Setup &amp; find()" data-title="Block B intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>36</span><span class="dot"></span><span>Block B · 2:00 – 2:40</span></div>
+    <h1 class="slide-title">Setup + your first queries</h1>
+    <div class="slide-subtitle">Q1 – Q3 · projection rules</div>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 37 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Setup checklist">
+  <div class="slide-header">
+    <div class="slide-meta"><span>37</span><span class="dot"></span><span>Setup</span></div>
+    <h1 class="slide-title">Setup checklist</h1>
+  </div>
+  <div class="slide-body">
+    <ul>
+      <li><code>mongod</code> running locally <strong>or</strong> Atlas connection string</li>
+      <li>Two windows side-by-side: <code>mongosh</code> + <strong>MongoDB Compass</strong></li>
+      <li>Import the dataset:
+<pre><code>mongoimport --db test --collection restaurants --file restaurants.json</code></pre>
+      </li>
+      <li>Sanity check:
+<pre><code>db.restaurants.<span class="tok-fn">countDocuments</span>()    <span class="tok-com">// ~25,359</span></code></pre>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- 38 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="find() workhorse">
+  <div class="slide-header">
+    <div class="slide-meta"><span>38</span><span class="dot"></span><span>The query API</span></div>
+    <h1 class="slide-title"><code>find()</code> — the workhorse</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.collection.<span class="tok-fn">find</span>( filter , projection )</code></pre>
+    <p>Both arguments are <strong>documents</strong>.</p>
+    <table>
+      <thead><tr><th>Argument</th><th>What it controls</th></tr></thead>
+      <tbody>
+        <tr><td><code>filter</code></td><td><em>Which</em> docs come back</td></tr>
+        <tr><td><code>projection</code></td><td><em>Which fields</em> come back</td></tr>
+      </tbody>
+    </table>
+    <p>Empty filter <code>{}</code> = all documents.</p>
+  </div>
+</section>
+
+<!-- 39 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Projection rules">
+  <div class="slide-header">
+    <div class="slide-meta"><span>39</span><span class="dot"></span><span>The query API</span></div>
+    <h1 class="slide-title">Projection rules</h1>
+  </div>
+  <div class="slide-body">
+    <p><strong>1</strong> = include · <strong>0</strong> = exclude</p>
+    <div class="callout danger">You <strong>cannot mix</strong> include and exclude in one projection — <strong>except <code>_id</code></strong>, which can always be excluded.</div>
+    <p><code>_id</code> is returned <strong>by default</strong> — opt out with <code>_id: 0</code>.</p>
+<pre><code><span class="tok-com">// LEGAL</span>
+{ name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, _id: <span class="tok-num">0</span> }
+
+<span class="tok-com">// ILLEGAL — mixing include + exclude</span>
+{ name: <span class="tok-num">1</span>, address: <span class="tok-num">0</span> }</code></pre>
+  </div>
+</section>
+
+<!-- 40 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Q1">
+  <div class="slide-header">
+    <div class="slide-meta"><span>40</span><span class="dot"></span><span>Lab query 1</span></div>
+    <h1 class="slide-title">Q1 — All documents</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>()</code></pre>
+    <p>Returns the cursor. In <code>mongosh</code>, type <code>it</code> to page through.</p>
+    <p>In Compass: just open the collection.</p>
+  </div>
+</section>
+
+<!-- 41 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Q2">
+  <div class="slide-header">
+    <div class="slide-meta"><span>41</span><span class="dot"></span><span>Lab query 2</span></div>
+    <h1 class="slide-title">Q2 — Specific fields (keeps <code>_id</code>)</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  {},
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span> }
+)</code></pre>
+    <p>You'll get back <strong>5 fields</strong> per doc — the four you asked for, <strong>plus <code>_id</code></strong>.</p>
+  </div>
+</section>
+
+<!-- 42 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Q3">
+  <div class="slide-header">
+    <div class="slide-meta"><span>42</span><span class="dot"></span><span>Lab query 3</span></div>
+    <h1 class="slide-title">Q3 — Specific fields, <em>no</em> <code>_id</code></h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  {},
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span>, _id: <span class="tok-num">0</span> }
+)</code></pre>
+    <p>Notice the <strong>only legal mix</strong>: include several fields <strong>and</strong> explicitly exclude <code>_id</code>.</p>
+  </div>
+</section>
+
+<!-- 43 -->
+<section class="slide" data-block="Block B — Setup &amp; find()" data-title="Try it">
+  <div class="slide-header">
+    <div class="slide-meta"><span>43</span><span class="dot"></span><span>Hands-on · 3 min</span></div>
+    <h1 class="slide-title">Try it: 3-minute exercise</h1>
+  </div>
+  <div class="slide-body">
+    <ol>
+      <li>Project only <code>name</code> and <code>cuisine</code> (with <code>_id</code>)</li>
+      <li>Now exclude <code>_id</code></li>
+      <li>Now also include <code>borough</code></li>
+    </ol>
+    <div class="callout">Then check Compass — same query, GUI-driven. They should match.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK C
+     ============================================================ -->
+
+<!-- 44 -->
+<section class="slide lead" data-block="Block C — Operators" data-title="Block C intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>44</span><span class="dot"></span><span>Block C · 2:40 – 3:20</span></div>
+    <h1 class="slide-title">Operators, nested fields, sort</h1>
+    <div class="slide-subtitle">Q4 – Q7 · the full read-query anatomy</div>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 45 -->
+<section class="slide" data-block="Block C — Operators" data-title="Dot notation">
+  <div class="slide-header">
+    <div class="slide-meta"><span>45</span><span class="dot"></span><span>Nested fields</span></div>
+    <h1 class="slide-title">Dot notation — nested fields</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>{ <span class="tok-str">"address.zipcode"</span>: <span class="tok-str">"10075"</span> }
+{ <span class="tok-str">"address.coord"</span>: [...] }</code></pre>
+    <p>Wrap the dotted path <strong>in quotes</strong> — JS would otherwise treat the dot as object access.</p>
+  </div>
+</section>
+
+<!-- 46 -->
+<section class="slide" data-block="Block C — Operators" data-title="Querying arrays">
+  <div class="slide-header">
+    <div class="slide-meta"><span>46</span><span class="dot"></span><span>Array semantics</span></div>
+    <h1 class="slide-title">Querying arrays — the key idea</h1>
+  </div>
+  <div class="slide-body">
+    <div class="callout"><strong>A condition on an array field matches if ANY element satisfies it.</strong></div>
+<pre><code><span class="tok-com">// grades = [ {grade:"A", score:10}, {grade:"B", score:80} ]</span>
+db.restaurants.<span class="tok-fn">find</span>({ <span class="tok-str">"grades.score"</span>: { $gt: <span class="tok-num">70</span> } })
+<span class="tok-com">// ✅ matches — because score 80 > 70</span></code></pre>
+    <p>This is <strong>the most important behaviour</strong> to internalise for today's lab.</p>
+  </div>
+</section>
+
+<!-- 47 -->
+<section class="slide" data-block="Block C — Operators" data-title="Positional access">
+  <div class="slide-header">
+    <div class="slide-meta"><span>47</span><span class="dot"></span><span>Array semantics</span></div>
+    <h1 class="slide-title">Positional access in arrays</h1>
+  </div>
+  <div class="slide-body">
+<pre><code><span class="tok-str">"address.coord.0"</span>   <span class="tok-com">// longitude (first element)</span>
+<span class="tok-str">"address.coord.1"</span>   <span class="tok-com">// latitude  (second element)</span></code></pre>
+    <p>Use this when you want a specific element, not "any element."</p>
+  </div>
+</section>
+
+<!-- 48 -->
+<section class="slide" data-block="Block C — Operators" data-title="Comparison ops">
+  <div class="slide-header">
+    <div class="slide-meta"><span>48</span><span class="dot"></span><span>Operators</span></div>
+    <h1 class="slide-title">Comparison operators</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Operator</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>$eq</code></td><td>equals (default — <code>{x: 5}</code> is <code>$eq</code>)</td></tr>
+        <tr><td><code>$ne</code></td><td>not equal</td></tr>
+        <tr><td><code>$gt</code>, <code>$gte</code></td><td>greater than (or equal)</td></tr>
+        <tr><td><code>$lt</code>, <code>$lte</code></td><td>less than (or equal)</td></tr>
+        <tr><td><code>$in</code></td><td>value in array of options</td></tr>
+        <tr><td><code>$nin</code></td><td>value not in array of options</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 49 -->
+<section class="slide" data-block="Block C — Operators" data-title="Logical ops">
+  <div class="slide-header">
+    <div class="slide-meta"><span>49</span><span class="dot"></span><span>Operators</span></div>
+    <h1 class="slide-title">Logical operators</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Operator</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><code>$and</code></td><td>All conditions true (usually <strong>implicit</strong>)</td></tr>
+        <tr><td><code>$or</code></td><td>Any condition true</td></tr>
+        <tr><td><code>$nor</code></td><td>None of the conditions true</td></tr>
+        <tr><td><code>$not</code></td><td>Negate a condition</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>Implicit AND</strong> — multiple keys in the same filter are ANDed automatically. Explicit <code>$and</code> is rarely needed.</div>
+  </div>
+</section>
+
+<!-- 50 -->
+<section class="slide" data-block="Block C — Operators" data-title="Trailing space">
+  <div class="slide-header">
+    <div class="slide-meta"><span>50</span><span class="dot"></span><span>Data quirk</span></div>
+    <h1 class="slide-title">Watch the trailing space</h1>
+  </div>
+  <div class="slide-body">
+    <p>In the dataset:</p>
+<pre><code>{ cuisine: <span class="tok-str">"American "</span> }   <span class="tok-com">// ← yes, with a trailing space</span></code></pre>
+<pre><code>db.restaurants.<span class="tok-fn">find</span>({ cuisine: <span class="tok-str">"American"</span> })   <span class="tok-com">// ❌ 0 results</span>
+db.restaurants.<span class="tok-fn">find</span>({ cuisine: <span class="tok-str">"American "</span> })  <span class="tok-com">// ✅ thousands</span></code></pre>
+    <div class="callout warning">Real-world data is messy. <strong>Trust the data, not the prose.</strong></div>
+  </div>
+</section>
+
+<!-- 51 -->
+<section class="slide" data-block="Block C — Operators" data-title="Q4 framing">
+  <div class="slide-header">
+    <div class="slide-meta"><span>51</span><span class="dot"></span><span>Lab query 4</span></div>
+    <h1 class="slide-title">Q4 — Locations</h1>
+  </div>
+  <div class="slide-body">
+    <div class="callout"><em>"Find restaurants where latitude &lt; -95.754168"</em></div>
+    <p>But <code>coord</code> is <code>[lng, lat]</code> and NYC latitudes are ~+40 — never negative.</p>
+    <p>The question really tests <strong>longitude</strong> (or "any element of coord").</p>
+  </div>
+</section>
+
+<!-- 52 -->
+<section class="slide" data-block="Block C — Operators" data-title="Q4 forms">
+  <div class="slide-header">
+    <div class="slide-meta"><span>52</span><span class="dot"></span><span>Lab query 4</span></div>
+    <h1 class="slide-title">Q4 — Two valid forms</h1>
+  </div>
+  <div class="slide-body">
+<pre><code><span class="tok-com">// Form 1 — classic answer
+// Matches if ANY element of coord < -95.754168
+// (in this data, that's longitude — lat is never that negative)</span>
+db.restaurants.<span class="tok-fn">find</span>({ <span class="tok-str">"address.coord"</span>: { $lt: <span class="tok-num">-95.754168</span> } })
+
+<span class="tok-com">// Form 2 — explicit by index</span>
+db.restaurants.<span class="tok-fn">find</span>({ <span class="tok-str">"address.coord.0"</span>: { $lt: <span class="tok-num">-95.754168</span> } })</code></pre>
+    <div class="callout"><strong>Trust the data, not the prose.</strong></div>
+  </div>
+</section>
+
+<!-- 53 -->
+<section class="slide" data-block="Block C — Operators" data-title="Q5">
+  <div class="slide-header">
+    <div class="slide-meta"><span>53</span><span class="dot"></span><span>Lab query 5</span></div>
+    <h1 class="slide-title">Q5 — Multiple conditions (with <code>$and</code>)</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>({
+  $and: [
+    { cuisine: { $ne: <span class="tok-str">"American "</span> } },
+    { <span class="tok-str">"grades.score"</span>: { $gt: <span class="tok-num">70</span> } },
+    { <span class="tok-str">"address.coord"</span>: { $lt: <span class="tok-num">-65.754168</span> } }
+  ]
+})</code></pre>
+    <p>Three conditions joined explicitly with <code>$and</code>.</p>
+  </div>
+</section>
+
+<!-- 54 -->
+<section class="slide" data-block="Block C — Operators" data-title="Q6">
+  <div class="slide-header">
+    <div class="slide-meta"><span>54</span><span class="dot"></span><span>Lab query 6</span></div>
+    <h1 class="slide-title">Q6 — Same query, <em>no</em> <code>$and</code></h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>({
+  cuisine: { $ne: <span class="tok-str">"American "</span> },
+  <span class="tok-str">"grades.score"</span>: { $gt: <span class="tok-num">70</span> },
+  <span class="tok-str">"address.coord"</span>: { $lt: <span class="tok-num">-65.754168</span> }
+})</code></pre>
+    <p><strong>Identical results.</strong> Multiple keys → implicit AND.</p>
+    <div class="callout">Implicit AND is <strong>idiomatic Mongo</strong>. Use it.</div>
+  </div>
+</section>
+
+<!-- 55 -->
+<section class="slide" data-block="Block C — Operators" data-title="Q7">
+  <div class="slide-header">
+    <div class="slide-meta"><span>55</span><span class="dot"></span><span>Lab query 7</span></div>
+    <h1 class="slide-title">Q7 — Filter + Projection + Sort</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  {
+    cuisine: { $ne: <span class="tok-str">"American "</span> },
+    <span class="tok-str">"grades.grade"</span>: <span class="tok-str">"A"</span>,
+    borough: { $ne: <span class="tok-str">"Brooklyn"</span> }
+  },
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span>, _id: <span class="tok-num">0</span> }
+).<span class="tok-fn">sort</span>({ cuisine: <span class="tok-num">-1</span> })</code></pre>
+    <p><strong>The full read-query anatomy:</strong> <code>filter</code> → <code>projection</code> → <code>sort</code>.</p>
+    <p>Sort: <code>1</code> = ascending, <code>-1</code> = descending.</p>
+  </div>
+</section>
+
+<!-- 56 -->
+<section class="slide" data-block="Block C — Operators" data-title="Read-query anatomy">
+  <div class="slide-header">
+    <div class="slide-meta"><span>56</span><span class="dot"></span><span>Memorise this shape</span></div>
+    <h1 class="slide-title">Read-query anatomy</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.collection
+   .<span class="tok-fn">find</span>( filter , projection )
+   .<span class="tok-fn">sort</span>( { field: ±1 } )
+   .<span class="tok-fn">skip</span>( n )
+   .<span class="tok-fn">limit</span>( n )</code></pre>
+    <div class="callout"><strong>This is the shape you'll use all semester.</strong></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK D
+     ============================================================ -->
+
+<!-- 57 -->
+<section class="slide lead" data-block="Block D — Regex &amp; bridge" data-title="Block D intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>57</span><span class="dot"></span><span>Block D · 3:20 – 4:00</span></div>
+    <h1 class="slide-title">Regex (Q8 – Q10) → bridge to Python</h1>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 58 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Two regex syntaxes">
+  <div class="slide-header">
+    <div class="slide-meta"><span>58</span><span class="dot"></span><span>Regex</span></div>
+    <h1 class="slide-title">MongoDB regex — two equivalent syntaxes</h1>
+  </div>
+  <div class="slide-body">
+<pre><code><span class="tok-com">// Native regex literal — works in mongosh</span>
+{ name: /^Wil/ }
+
+<span class="tok-com">// String form — works in any driver (Python, Node, Java, …)</span>
+{ name: { $regex: <span class="tok-str">"^Wil"</span> } }
+
+<span class="tok-com">// With flags</span>
+{ name: { $regex: <span class="tok-str">"^wil"</span>, $options: <span class="tok-str">"i"</span> } }   <span class="tok-com">// case-insensitive</span></code></pre>
+    <p><strong>Regex</strong> = "regular expressions" — a tiny pattern language for matching text. MongoDB uses the same flavour as Python and JavaScript, so anything you've seen there works here.</p>
+  </div>
+</section>
+
+<!-- 59 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Anchors">
+  <div class="slide-header">
+    <div class="slide-meta"><span>59</span><span class="dot"></span><span>Regex</span></div>
+    <h1 class="slide-title">Anchors — the only three you need today</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Pattern</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>^Wil</code></td><td><strong>starts with</strong> "Wil"</td></tr>
+        <tr><td><code>ces$</code></td><td><strong>ends with</strong> "ces"</td></tr>
+        <tr><td><code>Reg</code></td><td><strong>contains</strong> "Reg" anywhere</td></tr>
+      </tbody>
+    </table>
+    <p>Combine with character classes for power: <code>/^[AEIOU]/i</code> = "starts with vowel."</p>
+  </div>
+</section>
+
+<!-- 60 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Performance">
+  <div class="slide-header">
+    <div class="slide-meta"><span>60</span><span class="dot"></span><span>Regex</span></div>
+    <h1 class="slide-title">Performance note</h1>
+  </div>
+  <div class="slide-body">
+    <div class="callout warning">Unanchored or case-insensitive regex <strong>cannot use a normal index efficiently.</strong></div>
+    <ul>
+      <li>Fine for labs (25k docs)</li>
+      <li>Costly on a 100M-doc collection in production</li>
+    </ul>
+    <p><strong>Rule of thumb:</strong> anchor your regex (<code>^...</code>) when possible, and avoid the <code>i</code> flag at scale.</p>
+  </div>
+</section>
+
+<!-- 61 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Q8">
+  <div class="slide-header">
+    <div class="slide-meta"><span>61</span><span class="dot"></span><span>Lab query 8</span></div>
+    <h1 class="slide-title">Q8 — Starts with "Wil"</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  { name: /^Wil/ },
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span> }
+)</code></pre>
+  </div>
+</section>
+
+<!-- 62 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Q9">
+  <div class="slide-header">
+    <div class="slide-meta"><span>62</span><span class="dot"></span><span>Lab query 9</span></div>
+    <h1 class="slide-title">Q9 — Ends with "ces"</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  { name: /ces$/ },
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span> }
+)</code></pre>
+  </div>
+</section>
+
+<!-- 63 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Q10">
+  <div class="slide-header">
+    <div class="slide-meta"><span>63</span><span class="dot"></span><span>Lab query 10</span></div>
+    <h1 class="slide-title">Q10 — Contains "Reg"</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>db.restaurants.<span class="tok-fn">find</span>(
+  { name: /Reg/ },
+  { restaurant_id: <span class="tok-num">1</span>, name: <span class="tok-num">1</span>, borough: <span class="tok-num">1</span>, cuisine: <span class="tok-num">1</span> }
+)</code></pre>
+  </div>
+</section>
+
+<!-- 64 -->
+<section class="slide" data-block="Block D — Regex &amp; bridge" data-title="Bridge to code">
+  <div class="slide-header">
+    <div class="slide-meta"><span>64</span><span class="dot"></span><span>Bridge</span></div>
+    <h1 class="slide-title">Bridge: shell ↔ application code</h1>
+  </div>
+  <div class="slide-body">
+    <p>You've been driving MongoDB from the <strong>shell</strong>. Real applications drive it from <strong>code</strong>. After the break, we'll run a Flask API doing the same CRUD ops in Python.</p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>mongosh</h4>
+<pre><code>db.task.<span class="tok-fn">insertOne</span>({
+  title: <span class="tok-str">"Buy milk"</span>,
+  is_completed: <span class="tok-kw">false</span>
+})</code></pre>
+      </div>
+      <div class="col-card">
+        <h4>PyMongo</h4>
+<pre><code>mongo.db.task.<span class="tok-fn">insert_one</span>({
+  <span class="tok-str">"title"</span>: <span class="tok-str">"Buy milk"</span>,
+  <span class="tok-str">"is_completed"</span>: <span class="tok-kw">False</span>
+})</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 65 BREAK -->
+<section class="slide lead" data-block="Break" data-title="Break">
+  <div class="slide-header">
+    <div class="slide-meta"><span>65</span><span class="dot"></span><span>4:00 – 5:00</span></div>
+    <h1 class="slide-title">☕ BREAK</h1>
+    <div class="slide-subtitle">Back at 5:00 sharp</div>
+  </div>
+  <div class="slide-body">
+    <p>When we're back: Python, Flask, Streamlit.</p>
+    <p>Make sure you have <strong>Python 3.10+</strong> and <code>pip</code> available.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK E
+     ============================================================ -->
+
+<!-- 66 -->
+<section class="slide lead" data-block="Block E — PyMongo" data-title="Block E intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>66</span><span class="dot"></span><span>Block E · 5:00 – 5:30</span></div>
+    <h1 class="slide-title">PyMongo basics</h1>
+    <div class="slide-subtitle">The same CRUD, from Python</div>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 67 -->
+<section class="slide" data-block="Block E — PyMongo" data-title="Cheat table">
+  <div class="slide-header">
+    <div class="slide-meta"><span>67</span><span class="dot"></span><span>PyMongo</span></div>
+    <h1 class="slide-title">Shell ↔ PyMongo cheat table</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th><code>mongosh</code></th><th>PyMongo</th></tr></thead>
+      <tbody>
+        <tr><td><code>db.task.insertOne({...})</code></td><td><code>mongo.db.task.insert_one({...})</code></td></tr>
+        <tr><td><code>db.task.find()</code></td><td><code>mongo.db.task.find()</code></td></tr>
+        <tr><td><code>db.task.findOne({_id: ObjectId(id)})</code></td><td><code>mongo.db.task.find_one({"_id": ObjectId(id)})</code></td></tr>
+        <tr><td><code>db.task.updateOne({...}, {$set: {...}})</code></td><td><code>mongo.db.task.update_one({...}, {"$set": {...}})</code></td></tr>
+        <tr><td><code>db.task.deleteOne({...})</code></td><td><code>mongo.db.task.delete_one({...})</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><strong>One-to-one.</strong> Camel case → snake case. That's basically it.</div>
+  </div>
+</section>
+
+<!-- 68 -->
+<section class="slide" data-block="Block E — PyMongo" data-title="ObjectId wrapping">
+  <div class="slide-header">
+    <div class="slide-meta"><span>68</span><span class="dot"></span><span>PyMongo</span></div>
+    <h1 class="slide-title">Why <code>ObjectId(id)</code> matters</h1>
+  </div>
+  <div class="slide-body">
+    <p>In the shell, <code>ObjectId</code> is implicit — strings get converted automatically.</p>
+    <p>In Python, you <strong>must wrap</strong> the string:</p>
+<pre><code><span class="tok-kw">from</span> bson.objectid <span class="tok-kw">import</span> ObjectId
+
+mongo.db.task.<span class="tok-fn">find_one</span>({<span class="tok-str">"_id"</span>: <span class="tok-fn">ObjectId</span>(<span class="tok-str">"507f1f77bcf86cd799439011"</span>)})</code></pre>
+    <p>If the string isn't a valid 24-char hex → <code>bson.errors.InvalidId</code>.</p>
+    <div class="callout">The Flask app catches this and returns HTTP 400.</div>
+  </div>
+</section>
+
+<!-- 69 -->
+<section class="slide" data-block="Block E — PyMongo" data-title="Connection strings">
+  <div class="slide-header">
+    <div class="slide-meta"><span>69</span><span class="dot"></span><span>PyMongo</span></div>
+    <h1 class="slide-title">Connection strings</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>mongodb://localhost:27017                      <span class="tok-com"># local mongod</span>
+mongodb://user:pass@host:27017/dbname          <span class="tok-com"># local with auth</span>
+mongodb+srv://user:pass@cluster.xxx.mongodb.net/dbname   <span class="tok-com"># Atlas (uses DNS SRV)</span></code></pre>
+    <p><strong><code>mongodb+srv://</code></strong> requires the <code>dnspython</code> package — that's why it's in <code>requirements.txt</code>.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK F
+     ============================================================ -->
+
+<!-- 70 -->
+<section class="slide lead" data-block="Block F — Flask API" data-title="Block F intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>70</span><span class="dot"></span><span>Block F · 5:30 – 6:15</span></div>
+    <h1 class="slide-title">Flask CRUD API walk-through</h1>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 71 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Setup parallel">
+  <div class="slide-header">
+    <div class="slide-meta"><span>71</span><span class="dot"></span><span>Setup</span></div>
+    <h1 class="slide-title">Setup (do this in parallel with talking)</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>cd <span class="tok-str">"MongoDB CRUD API"</span>
+python -m venv .venv
+
+<span class="tok-com"># Windows</span>
+.venv\Scripts\activate
+
+<span class="tok-com"># macOS / Linux</span>
+source .venv/bin/activate
+
+pip install -r requirements.txt
+python TaskManagerMongoDB.py
+<span class="tok-com"># serves on http://localhost:5001</span></code></pre>
+  </div>
+</section>
+
+<!-- 72 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Route table">
+  <div class="slide-header">
+    <div class="slide-meta"><span>72</span><span class="dot"></span><span>API surface</span></div>
+    <h1 class="slide-title">The route table</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Route</th><th>HTTP</th><th>Mongo operation</th></tr></thead>
+      <tbody>
+        <tr><td><code>/</code></td><td><span class="pill blue">GET</span></td><td>health check</td></tr>
+        <tr><td><code>/v1/tasks</code></td><td><span class="pill green">POST</span></td><td><code>insert_one</code> (single or bulk)</td></tr>
+        <tr><td><code>/v1/tasks</code></td><td><span class="pill blue">GET</span></td><td><code>find()</code> → list all</td></tr>
+        <tr><td><code>/v1/tasks/&lt;id&gt;</code></td><td><span class="pill blue">GET</span></td><td><code>find_one({"_id": ObjectId(id)})</code></td></tr>
+        <tr><td><code>/v1/tasks/&lt;id&gt;</code></td><td><span class="pill">PUT</span></td><td><code>update_one(..., {"$set": {...}})</code></td></tr>
+        <tr><td><code>/v1/tasks/&lt;id&gt;</code></td><td><span class="pill red">DEL</span></td><td><code>delete_one({"_id": ObjectId(id)})</code></td></tr>
+        <tr><td><code>/v1/tasks</code></td><td><span class="pill red">DEL</span></td><td>bulk delete</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">Every route is one Mongo call — sometimes preceded by an existence check.</div>
+  </div>
+</section>
+
+<!-- 73 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Existence check">
+  <div class="slide-header">
+    <div class="slide-meta"><span>73</span><span class="dot"></span><span>Pattern</span></div>
+    <h1 class="slide-title">Pattern: existence check before update/delete</h1>
+  </div>
+  <div class="slide-body">
+<pre><code>existed_task = mongo.db.task.<span class="tok-fn">find_one</span>({<span class="tok-str">"_id"</span>: <span class="tok-fn">ObjectId</span>(id)})
+<span class="tok-kw">if</span> existed_task <span class="tok-kw">is not</span> <span class="tok-kw">None</span>:
+    mongo.db.task.<span class="tok-fn">update_one</span>(
+        {<span class="tok-str">"_id"</span>: <span class="tok-fn">ObjectId</span>(id)},
+        {<span class="tok-str">"$set"</span>: {<span class="tok-str">"title"</span>: new_title}}
+    )
+    <span class="tok-kw">return</span> <span class="tok-fn">jsonify</span>({<span class="tok-str">"message"</span>: <span class="tok-str">"updated"</span>}), <span class="tok-num">204</span>
+<span class="tok-kw">else</span>:
+    <span class="tok-kw">return</span> <span class="tok-fn">jsonify</span>({<span class="tok-str">"error"</span>: <span class="tok-str">"not found"</span>}), <span class="tok-num">404</span></code></pre>
+    <p><strong>Realistic API shape:</strong> never just blindly update — always tell the client whether their target existed.</p>
+  </div>
+</section>
+
+<!-- 74 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Status codes">
+  <div class="slide-header">
+    <div class="slide-meta"><span>74</span><span class="dot"></span><span>Pattern</span></div>
+    <h1 class="slide-title">Status codes used</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Code</th><th>Meaning</th><th>When</th></tr></thead>
+      <tbody>
+        <tr><td><strong>201</strong></td><td>Created</td><td>Successful POST</td></tr>
+        <tr><td><strong>204</strong></td><td>No Content</td><td>Successful update/delete</td></tr>
+        <tr><td><strong>400</strong></td><td>Bad Request</td><td>Invalid <code>ObjectId</code> format</td></tr>
+        <tr><td><strong>404</strong></td><td>Not Found</td><td>Target id doesn't exist</td></tr>
+        <tr><td><strong>500</strong></td><td>Server Error</td><td>PyMongo blew up</td></tr>
+      </tbody>
+    </table>
+    <p>These conventions matter — frontends rely on them.</p>
+  </div>
+</section>
+
+<!-- 75 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Security moment">
+  <div class="slide-header">
+    <div class="slide-meta"><span>75</span><span class="dot"></span><span>Security</span></div>
+    <h1 class="slide-title">🚨 Security teaching moment</h1>
+  </div>
+  <div class="slide-body">
+    <p>The file ships with <strong>hardcoded Atlas credentials</strong>:</p>
+<pre><code>uri = <span class="tok-str">"mongodb+srv://linus:linus9161@cluster0.jbncr.mongodb.net/taskapp.task"</span></code></pre>
+    <div class="callout danger"><strong>Never commit credentials.</strong> Ever.</div>
+    <p>The fix:</p>
+<pre><code><span class="tok-kw">import</span> os
+uri = os.environ[<span class="tok-str">"MONGO_URI"</span>]</code></pre>
+    <p>After today: <strong>rotate</strong> that Atlas password — it's effectively public now.</p>
+  </div>
+</section>
+
+<!-- 76 -->
+<section class="slide" data-block="Block F — Flask API" data-title="Hit endpoints">
+  <div class="slide-header">
+    <div class="slide-meta"><span>76</span><span class="dot"></span><span>Hands-on</span></div>
+    <h1 class="slide-title">Hit the endpoints</h1>
+  </div>
+  <div class="slide-body">
+<pre><code><span class="tok-com"># Create</span>
+curl -X POST http://localhost:5001/v1/tasks \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d <span class="tok-str">'{"title":"Buy milk"}'</span>
+
+<span class="tok-com"># List</span>
+curl http://localhost:5001/v1/tasks
+
+<span class="tok-com"># Update (paste id from create)</span>
+curl -X PUT http://localhost:5001/v1/tasks/&lt;id&gt; \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d <span class="tok-str">'{"is_completed":true}'</span>
+
+<span class="tok-com"># Delete</span>
+curl -X DELETE http://localhost:5001/v1/tasks/&lt;id&gt;</code></pre>
+    <div class="callout">After each call → switch to <strong>Compass</strong> and watch the row appear / change / vanish.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK G
+     ============================================================ -->
+
+<!-- 77 -->
+<section class="slide lead" data-block="Block G — Streamlit" data-title="Block G intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>77</span><span class="dot"></span><span>Block G · 6:15 – 6:50</span></div>
+    <h1 class="slide-title">Streamlit frontend — end-to-end</h1>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 78 -->
+<section class="slide" data-block="Block G — Streamlit" data-title="Run it">
+  <div class="slide-header">
+    <div class="slide-meta"><span>78</span><span class="dot"></span><span>Setup</span></div>
+    <h1 class="slide-title">Run it</h1>
+  </div>
+  <div class="slide-body">
+    <p>Keep Flask running in the other terminal, then:</p>
+<pre><code>pip install streamlit requests
+streamlit run StreamLit_MongoDB_FrontEnd.py
+<span class="tok-com"># opens browser at http://localhost:8501</span></code></pre>
+    <p>You now have <strong>three things running</strong>:</p>
+    <ul>
+      <li>MongoDB (Atlas)</li>
+      <li>Flask API (port 5001)</li>
+      <li>Streamlit UI (port 8501)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 79 -->
+<section class="slide" data-block="Block G — Streamlit" data-title="Five tabs">
+  <div class="slide-header">
+    <div class="slide-meta"><span>79</span><span class="dot"></span><span>UI ↔ API mapping</span></div>
+    <h1 class="slide-title">Five tabs, one CRUD operation each</h1>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>Tab</th><th>Calls</th></tr></thead>
+      <tbody>
+        <tr><td>Create Task</td><td><span class="pill green">POST</span> <code>/v1/tasks</code></td></tr>
+        <tr><td>List All Tasks</td><td><span class="pill blue">GET</span> <code>/v1/tasks</code></td></tr>
+        <tr><td>Get Task</td><td><span class="pill blue">GET</span> <code>/v1/tasks/&lt;id&gt;</code></td></tr>
+        <tr><td>Update Task</td><td><span class="pill">PUT</span> <code>/v1/tasks/&lt;id&gt;</code></td></tr>
+        <tr><td>Delete Task</td><td><span class="pill red">DEL</span> <code>/v1/tasks/&lt;id&gt;</code></td></tr>
+      </tbody>
+    </table>
+    <p>Open <code>StreamLit_MongoDB_FrontEnd.py</code> side-by-side — every button is a <code>requests.&lt;verb&gt;</code> call to the Flask API you just ran.</p>
+  </div>
+</section>
+
+<!-- 80 -->
+<section class="slide" data-block="Block G — Streamlit" data-title="Three layers">
+  <div class="slide-header">
+    <div class="slide-meta"><span>80</span><span class="dot"></span><span>The big picture</span></div>
+    <h1 class="slide-title">The three-layer picture</h1>
+  </div>
+  <div class="slide-body">
+    <div class="ascii">   Streamlit UI
+       │  HTTP
+       ▼
+    Flask API
+       │  PyMongo
+       ▼
+   MongoDB (Atlas)</div>
+    <div class="callout"><strong>Today's payoff:</strong> you've now seen the same CRUD operation at all three layers — shell, Python, web UI.</div>
+  </div>
+</section>
+
+<!-- 81 -->
+<section class="slide" data-block="Block G — Streamlit" data-title="Mini-exercise">
+  <div class="slide-header">
+    <div class="slide-meta"><span>81</span><span class="dot"></span><span>Hands-on · 10 min</span></div>
+    <h1 class="slide-title">Mini-exercise</h1>
+  </div>
+  <div class="slide-body">
+    <ol>
+      <li>Create three tasks via the <strong>Streamlit</strong> UI</li>
+      <li>Open <code>mongosh</code> and run <code>db.task.find()</code> → see them</li>
+      <li>Run <code>db.task.updateOne(...)</code> in <code>mongosh</code> to flip one's <code>is_completed</code></li>
+      <li>Refresh the Streamlit list tab → the change appears</li>
+    </ol>
+    <div class="callout"><strong>Shell and app share the same database.</strong> That's the whole point.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WRAP
+     ============================================================ -->
+
+<!-- 82 -->
+<section class="slide lead" data-block="Wrap-up" data-title="Wrap intro">
+  <div class="slide-header">
+    <div class="slide-meta"><span>82</span><span class="dot"></span><span>6:50 – 7:00</span></div>
+    <h1 class="slide-title">Wrap-up</h1>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- 83 -->
+<section class="slide" data-block="Wrap-up" data-title="Mental models">
+  <div class="slide-header">
+    <div class="slide-meta"><span>83</span><span class="dot"></span><span>Take home</span></div>
+    <h1 class="slide-title">Three mental models to take home</h1>
+  </div>
+  <div class="slide-body">
+    <ol>
+      <li><strong>Filter document = conjunction</strong> (implicit AND)</li>
+      <li><strong>Querying an array field</strong> = "does any element match?"</li>
+      <li><strong>Projection rules</strong> = include-XOR-exclude, except <code>_id</code></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 84 -->
+<section class="slide" data-block="Wrap-up" data-title="Three-layer stack">
+  <div class="slide-header">
+    <div class="slide-meta"><span>84</span><span class="dot"></span><span>Take home</span></div>
+    <h1 class="slide-title">The three-layer stack</h1>
+  </div>
+  <div class="slide-body">
+    <div class="ascii">UI  →  API  →  DB</div>
+    <p>Same CRUD operation, three different syntaxes. Get fluent at moving between them — that's full-stack data work.</p>
+  </div>
+</section>
+
+<!-- 85 -->
+<section class="slide" data-block="Wrap-up" data-title="Homework">
+  <div class="slide-header">
+    <div class="slide-meta"><span>85</span><span class="dot"></span><span>Next class</span></div>
+    <h1 class="slide-title">Homework</h1>
+  </div>
+  <div class="slide-body">
+    <p>Open <code>mongodb_aggregation_questions.js</code> — <strong>35 aggregation problems</strong> on the same restaurants dataset.</p>
+    <p>Difficulty arc:</p>
+    <ul>
+      <li><span class="pill">1–5</span> Basic groupings &amp; averages</li>
+      <li><span class="pill">6–10</span> Intermediate ($match → $group)</li>
+      <li><span class="pill">11–15</span> Advanced (multi-stage pipelines)</li>
+      <li><span class="pill">16–25</span> Geospatial, text, complex analysis</li>
+      <li><span class="pill">26–35</span> Time-series, statistics</li>
+    </ul>
+    <div class="callout"><strong>Try 1–10 before next class.</strong> We'll cover the <code>aggregate()</code> pipeline formally on Day 2.</div>
+  </div>
+</section>
+
+<!-- 86 -->
+<section class="slide" data-block="Wrap-up" data-title="Resources">
+  <div class="slide-header">
+    <div class="slide-meta"><span>86</span><span class="dot"></span><span>Resources</span></div>
+    <h1 class="slide-title">Reference resources</h1>
+  </div>
+  <div class="slide-body">
+    <ul>
+      <li><strong>MongoDB docs:</strong> mongodb.com/docs/</li>
+      <li><strong>MongoDB University</strong> (free courses): learn.mongodb.com/</li>
+      <li><strong>Compass:</strong> mongodb.com/products/compass</li>
+      <li><strong>PyMongo docs:</strong> pymongo.readthedocs.io/</li>
+      <li><strong>Aggregation cheat sheet:</strong> MongoDB docs → "Aggregation Operators"</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 87 -->
+<section class="slide lead" data-block="Wrap-up" data-title="Questions">
+  <div class="slide-header">
+    <div class="slide-meta"><span>87</span><span class="dot"></span><span>Final</span></div>
+    <h1 class="slide-title">Questions?</h1>
+    <div class="slide-subtitle">Then go try the homework before you forget today's intuitions.</div>
+  </div>
+  <div class="slide-body"></div>
+</section>
+
+<!-- ============================================================
+     SLIDES END
+     ============================================================ -->
+
+      </div><!-- /canvas -->
+    </div><!-- /stage -->
+
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  </main>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  // Auto-renumber slide-meta indices based on actual position
+  slides.forEach((s, idx) => {
+    const meta = s.querySelector('.slide-meta');
+    if (meta && meta.firstElementChild) {
+      meta.firstElementChild.textContent = String(idx+1).padStart(2,'0');
+    }
+  });
+
+  // Build sidebar grouped by data-block
+  const nav = document.getElementById('sidebarNav');
+  const groups = {};
+  slides.forEach((s, idx) => {
+    const block = s.dataset.block || 'Other';
+    (groups[block] = groups[block] || []).push({ idx, title: s.dataset.title || ('Slide ' + (idx+1)) });
+  });
+  Object.entries(groups).forEach(([block, items]) => {
+    const g = document.createElement('div');
+    g.className = 'nav-group';
+    const lbl = document.createElement('div');
+    lbl.className = 'nav-label';
+    lbl.textContent = block;
+    g.appendChild(lbl);
+    items.forEach(({idx, title}) => {
+      const it = document.createElement('div');
+      it.className = 'nav-item';
+      it.dataset.idx = idx;
+      it.innerHTML = '<span class="idx">' + String(idx+1).padStart(2,'0') + '</span><span>' + title + '</span>';
+      it.addEventListener('click', () => go(idx));
+      g.appendChild(it);
+    });
+    nav.appendChild(g);
+  });
+
+  document.getElementById('footTot').textContent = '/ ' + String(total).padStart(2,'0');
+
+  function go(n){
+    i = Math.max(0, Math.min(total-1, n));
+    slides.forEach((s,k) => s.classList.toggle('active', k === i));
+    document.querySelectorAll('.nav-item').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.idx) === i);
+    });
+    const active = document.querySelector('.nav-item.active');
+    if (active) active.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+    const s = slides[i];
+    document.getElementById('crumbBlock').textContent = s.dataset.block || '';
+    document.getElementById('crumbSlide').textContent = s.dataset.title || '';
+    document.getElementById('footIdx').textContent = String(i+1).padStart(2,'0');
+    document.getElementById('progressFill').style.width = ((i+1)/total*100) + '%';
+    location.hash = '#' + (i+1);
+  }
+  window.next = () => go(i+1);
+  window.prev = () => go(i-1);
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft','PageUp'].includes(e.key))   { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End')  go(total-1);
+  });
+
+  // Deep-link via #N
+  const hash = parseInt(location.hash.replace('#',''), 10);
+  go(Number.isFinite(hash) && hash >= 1 ? hash-1 : 0);
+})();
+</script>
+</body>
+</html>
